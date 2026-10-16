@@ -153,7 +153,7 @@ This project uses [Jest](https://jestjs.io/) with `babel-jest` and the `jsdom` e
    ```
    The HTML report is written to `coverage/lcov-report/index.html` — open it in your browser to see coverage by file and line.
 
-As of the last full run, project-wide statement coverage is ~90%, with the core game-flow (`gameController.js`), board-swap (`boardController.js`), and event-wiring (`boardEventHandlers.js`) modules all above 80%.
+As of the last full run (189 tests), project-wide statement coverage is ~97%, with the core game-flow (`gameController.js`), board-swap (`boardController.js`), and event-wiring (`boardEventHandlers.js`) modules all above 95%.
 
 ---
 
