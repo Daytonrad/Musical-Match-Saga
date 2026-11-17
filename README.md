@@ -2,7 +2,7 @@
 
 Musical Match Saga is a browser-based match-3 puzzle game with a musical twist. Instead of sweets, you swap and match musical symbols to clear the board, complete level objectives, and progress through timed challenges with limited moves and lives.
 
-### ▶ [Play Musical Match Saga live](https://hannahro15.github.io/Musical-Themed-Candy-Crush/)
+### ▶ [Play Musical Match Saga live](https://hannahro15.github.io/Musical-Match-Saga/)
 
 
 ![Screenshot home](images/home-screen.jpg)
@@ -51,11 +51,11 @@ Drag, swipe, or tap a tile then tap an adjacent one to create matches:
 
 ## Getting Started
 
-The easiest way to play is the [live version on GitHub Pages](https://hannahro15.github.io/Musical-Themed-Candy-Crush/). To run it locally instead:
+The easiest way to play is the [live version on GitHub Pages](https://hannahro15.github.io/Musical-Match-Saga/). To run it locally instead:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/hannahro15/Musical-Themed-Candy-Crush.git
+   git clone https://github.com/hannahro15/Musical-Match-Saga.git
    ```
 2. Start a local web server from the project folder, for example:
    ```bash
@@ -80,7 +80,7 @@ Opening `index.html` directly from your file system won't work, because the game
 
 ## Project Structure
 ```
-Musical-Themed-Candy-Crush/
+Musical-Match-Saga/
 │
 ├── src/                          # game code (ES modules)
 │   ├── script.js                 # entry point: wires up menu buttons and starts the game
