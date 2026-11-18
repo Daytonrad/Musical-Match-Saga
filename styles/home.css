@@ -542,3 +542,13 @@ h1 {
     overflow: hidden;
   }
 }
+.noscript-message {
+    margin: 1rem;
+    padding: 1rem;
+    border: 2px solid currentColor;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    background: #fff8e1;
+    color: #222;
+}
