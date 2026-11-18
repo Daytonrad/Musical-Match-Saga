@@ -66,7 +66,7 @@ Screenshots in your pull request description are fine, because they don't get ad
 
 ## Response times
 
-Response times vary depending on my schedule, but I'll do my best to reply to issues and pull requests within a reasonable time. Thanks for your patience!
+Response times vary depending on my schedule, but I'll do my best to reply to issues and comments, and to review pull requests, as quickly as I can. Thanks for your patience!
 
 ## Getting help
 
