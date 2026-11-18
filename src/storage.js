@@ -1,7 +1,7 @@
 // storage.js - localStorage utilities for game data persistence
 import { isObjectiveKey } from './gameState.js';
 
-const STORAGE_KEY = 'musicalMatchSaga';
+export const STORAGE_KEY = 'musicalMatchSaga';
 
 function readStore() {
   try {
