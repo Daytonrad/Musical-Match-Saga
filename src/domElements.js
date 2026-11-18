@@ -54,3 +54,9 @@ export const congratsModal = document.getElementById('congratsModal');
 export const congratsFinalScore = document.getElementById('congratsFinalScore');
 export const congratsPlayAgainBtn = document.getElementById('congratsPlayAgainBtn');
 export const congratsHomeBtn = document.getElementById('congratsHomeBtn');
+
+
+// Changed-in-another-tab modal
+export const otherTabModal = document.getElementById('otherTabModal');
+export const otherTabUseThisBtn = document.getElementById('otherTabUseThisBtn');
+export const otherTabGoHomeBtn = document.getElementById('otherTabGoHomeBtn');

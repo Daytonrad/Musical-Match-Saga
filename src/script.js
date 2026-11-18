@@ -11,8 +11,12 @@ import {
   restartLevel,
   nextLevel,
   goHome,
-  restartGameFromBeginning
+  restartGameFromBeginning,
+  handleSavedGameChangedElsewhere,
+  useThisTab,
+  leaveForOtherTab
 } from './gameController.js';
+import { STORAGE_KEY } from './storage.js';
 
 
 /* -----------------------------------
@@ -138,6 +142,14 @@ function bindEvents() {
     });
   }
 
+  // Saved game changed in another tab
+  if (dom.otherTabUseThisBtn) {
+    dom.otherTabUseThisBtn.addEventListener('click', useThisTab);
+  }
+  if (dom.otherTabGoHomeBtn) {
+    dom.otherTabGoHomeBtn.addEventListener('click', leaveForOtherTab);
+  }
+
   // Congratulations modal events
   if (dom.congratsPlayAgainBtn) {
     dom.congratsPlayAgainBtn.addEventListener('click', () => {
@@ -167,6 +179,13 @@ function init() {
 
   bindEvents();
   showMenu();
+
+  // key is null when another tab clears all of localStorage
+  window.addEventListener('storage', (event) => {
+    if (event.key === STORAGE_KEY || event.key === null) {
+      handleSavedGameChangedElsewhere();
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', init);

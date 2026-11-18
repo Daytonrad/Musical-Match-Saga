@@ -87,6 +87,9 @@ import {
   restartLevel,
   nextLevel,
   autoSaveProgress,
+  handleSavedGameChangedElsewhere,
+  useThisTab,
+  leaveForOtherTab,
 } from '../src/gameController.js';
 
 function el(startHidden = false) {
@@ -125,6 +128,9 @@ describe('gameController flow', () => {
     dom.gameOverModal = el(true);
     dom.congratsModal = el(true);
     dom.congratsFinalScore = el();
+    dom.otherTabModal = el(true);
+    dom.otherTabUseThisBtn = el();
+    dom.otherTabGoHomeBtn = el();
 
     // Reset the shared gameState singleton to a known baseline.
     Object.assign(gameState, {
@@ -326,5 +332,43 @@ describe('gameController flow', () => {
     gameState.levelComplete = false;
     autoSaveProgress();
     expect(storageMock.saveGameProgress).not.toHaveBeenCalled();
+  });
+
+  describe('saved game changed in another tab', () => {
+    test('on the home screen it refreshes the menu and shows no modal', () => {
+      storageMock.loadGameProgress.mockReturnValue({ level: 1 });
+      handleSavedGameChangedElsewhere();
+      expect(dom.otherTabModal.classList.contains('hidden')).toBe(true);
+      expect(dom.continueButton.classList.contains('hidden')).toBe(false);
+      storageMock.loadGameProgress.mockReturnValue(null);
+    });
+
+    test('during a level it stops the timer and opens the modal', () => {
+      dom.gameBoardContainer.classList.remove('hidden');
+      gameState.timerActive = true;
+      handleSavedGameChangedElsewhere();
+      expect(timerMock.stopTimer).toHaveBeenCalled();
+      expect(gameState.timerActive).toBe(false);
+      expect(dom.otherTabModal.classList.contains('hidden')).toBe(false);
+    });
+
+    test('Use this tab saves this tab game and resumes the timer', () => {
+      dom.gameBoardContainer.classList.remove('hidden');
+      gameState.timerActive = true;
+      handleSavedGameChangedElsewhere();
+      useThisTab();
+      expect(storageMock.saveGameProgress).toHaveBeenCalled();
+      expect(timerMock.startTimer).toHaveBeenCalled();
+      expect(gameState.timerActive).toBe(true);
+      expect(dom.otherTabModal.classList.contains('hidden')).toBe(true);
+    });
+
+    test('Go home keeps the other tab save and shows the menu', () => {
+      dom.gameBoardContainer.classList.remove('hidden');
+      handleSavedGameChangedElsewhere();
+      leaveForOtherTab();
+      expect(storageMock.saveGameProgress).not.toHaveBeenCalled();
+      expect(dom.otherTabModal.classList.contains('hidden')).toBe(true);
+    });
   });
 });
