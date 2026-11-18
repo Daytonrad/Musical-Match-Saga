@@ -2,7 +2,7 @@
 import { gameState } from './gameState.js';
 import { LEVELS } from './levels.js';
 import { saveHighScore, saveHighestLevel, clearGameProgress } from './storage.js';
-import { announce } from './utils.js';
+import { announce, formatScore } from './utils.js';
 import { stopTimer } from './timer.js';
 
 // Show the "New best score!" line of a result modal only when a record was set.
@@ -31,7 +31,7 @@ export function handleLevelWin() {
         const congratsModal = document.getElementById('congratsModal');
         const congratsFinalScore = document.getElementById('congratsFinalScore');
         if (congratsFinalScore) {
-            congratsFinalScore.textContent = `Total Score: ${finalScore.toLocaleString()}`;
+            congratsFinalScore.textContent = `Total Score: ${formatScore(finalScore)}`;
         }
         toggleNewBest('congratsNewBest', isNewBest);
         if (congratsModal) congratsModal.classList.remove('hidden');
@@ -77,7 +77,7 @@ export function handleLevelLose(restartContainer, restartBtn, nextLevelBtn) {
         const gameOverModal = document.getElementById('gameOverModal');
         const gameOverFinalScore = document.getElementById('gameOverFinalScore');
         if (gameOverFinalScore) {
-            gameOverFinalScore.textContent = `Total Score: ${finalScore.toLocaleString()}`;
+            gameOverFinalScore.textContent = `Total Score: ${formatScore(finalScore)}`;
         }
         toggleNewBest('gameOverNewBest', isNewBest);
         if (gameOverModal) {

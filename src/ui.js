@@ -1,3 +1,5 @@
+import { formatScore } from './utils.js';
+
 export function showMenuPage(heading, subtitle, menu, gameBoard, movesDisplay, scoreDisplay, timerDisplay, livesDisplay, restartContainer) {
   const elementsToShow = [heading, subtitle, menu];
   const elementsToHide = [
@@ -26,18 +28,18 @@ export function updateMovesDisplay(movesDisplay, movesLeft) {
 }
 
 export function updateScoreDisplay(scoreDisplay, score) {
-  scoreDisplay.textContent = `Score: ${score}`;
+  scoreDisplay.textContent = `Score: ${formatScore(score)}`;
 }
 
 export function updateTotalScoreDisplay(totalScoreDisplay, totalScore) {
   if (totalScoreDisplay) {
-    totalScoreDisplay.textContent = `Total Score: ${totalScore}`;
+    totalScoreDisplay.textContent = `Total Score: ${formatScore(totalScore)}`;
   }
 }
 
 export function updateHighScoreDisplay(highScoreDisplay, highScore) {
   if (highScoreDisplay) {
-    highScoreDisplay.textContent = `Best Score: ${highScore}`;
+    highScoreDisplay.textContent = `Best Score: ${formatScore(highScore)}`;
     highScoreDisplay.classList.remove('hidden');
   }
 }

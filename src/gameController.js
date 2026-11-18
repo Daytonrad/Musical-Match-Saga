@@ -23,7 +23,7 @@ import { handleLevelLose } from './levelOutcomes.js';
 import { setGameBoardRef, boardEventHandlers } from './boardEventHandlers.js';
 import { startTimer, stopTimer } from './timer.js';
 import { wireUpCellEvents } from './events.js';
-import { showElement, hideElement } from './utils.js';
+import { showElement, hideElement, formatScore } from './utils.js';
 import * as dom from './domElements.js';
 
 /* -----------------------------------
@@ -395,7 +395,7 @@ export function nextLevel() {
 
     // Display final score in congratulations modal
     if (dom.congratsFinalScore) {
-      dom.congratsFinalScore.textContent = `Total Score: ${gameState.totalScore.toLocaleString()}`;
+      dom.congratsFinalScore.textContent = `Total Score: ${formatScore(gameState.totalScore)}`;
     }
 
     showElement(dom.congratsModal);
