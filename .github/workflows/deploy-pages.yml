@@ -62,3 +62,24 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      # The list comes from the repo (git ls-files), not from _site/, so a
+      # file that was left out of the copy step above is still checked.
+      - name: Check the live site
+        env:
+          SITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          base="${SITE_URL%/}"
+          missing=0
+          while IFS= read -r file; do
+            if ! curl --fail --silent --show-error --output /dev/null \
+              --retry 5 --retry-delay 10 --retry-all-errors \
+              "$base/$file"; then
+              echo "::error::Missing from the live site: $file"
+              missing=$((missing + 1))
+            fi
+          done < <(git ls-files | grep -E '^(manifest\.json|[^/]+\.(html|xml|txt)|(src|styles|images)/.+)$')
+          if [ "$missing" -gt 0 ]; then
+            echo "$missing file(s) missing from the live site"
+            exit 1
+          fi
