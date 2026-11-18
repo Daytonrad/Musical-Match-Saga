@@ -55,6 +55,8 @@ export const congratsFinalScore = document.getElementById('congratsFinalScore');
 export const congratsPlayAgainBtn = document.getElementById('congratsPlayAgainBtn');
 export const congratsHomeBtn = document.getElementById('congratsHomeBtn');
 
-// Storage warnings
-export const storageNotice = document.getElementById('storageNotice');
-export const saveFailedNotice = document.getElementById('saveFailedNotice');
+
+// Changed-in-another-tab modal
+export const otherTabModal = document.getElementById('otherTabModal');
+export const otherTabUseThisBtn = document.getElementById('otherTabUseThisBtn');
+export const otherTabGoHomeBtn = document.getElementById('otherTabGoHomeBtn');

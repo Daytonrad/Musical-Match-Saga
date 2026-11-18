@@ -2,6 +2,8 @@
 
 import { setBoardControllerDeps } from './boardController.js';
 import { showElement, hideElement } from './utils.js';
+import { gameState } from './gameState.js';
+import { pauseTimerForModal, resumeTimerAfterModal } from './timer.js';
 import * as dom from './domElements.js';
 import {
   showMenu,
@@ -11,8 +13,12 @@ import {
   restartLevel,
   nextLevel,
   goHome,
-  restartGameFromBeginning
+  restartGameFromBeginning,
+  handleSavedGameChangedElsewhere,
+  useThisTab,
+  leaveForOtherTab
 } from './gameController.js';
+import { STORAGE_KEY } from './storage.js';
 
 
 /* -----------------------------------
@@ -37,6 +43,8 @@ function bindEvents() {
       if (!dom.gameBoardContainer.classList.contains('hidden')) {
         const modal = document.getElementById('confirmHomeModal');
         modal.classList.remove('hidden');
+        // Pause the countdown while the modal is open
+        const wasRunning = pauseTimerForModal(gameState);
         // Focus the close button for accessibility
         const closeBtn = document.getElementById('closeConfirmHomeModal');
         if (closeBtn) closeBtn.focus();
@@ -55,9 +63,11 @@ function bindEvents() {
         }
         function handleCancel() {
           cleanup();
+          resumeTimerAfterModal(gameState, wasRunning);
         }
         function handleClose() {
           cleanup();
+          resumeTimerAfterModal(gameState, wasRunning);
         }
         function handleCloseKey(e) {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -138,6 +148,14 @@ function bindEvents() {
     });
   }
 
+  // Saved game changed in another tab
+  if (dom.otherTabUseThisBtn) {
+    dom.otherTabUseThisBtn.addEventListener('click', useThisTab);
+  }
+  if (dom.otherTabGoHomeBtn) {
+    dom.otherTabGoHomeBtn.addEventListener('click', leaveForOtherTab);
+  }
+
   // Congratulations modal events
   if (dom.congratsPlayAgainBtn) {
     dom.congratsPlayAgainBtn.addEventListener('click', () => {
@@ -167,6 +185,13 @@ function init() {
 
   bindEvents();
   showMenu();
+
+  // key is null when another tab clears all of localStorage
+  window.addEventListener('storage', (event) => {
+    if (event.key === STORAGE_KEY || event.key === null) {
+      handleSavedGameChangedElsewhere();
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', init);

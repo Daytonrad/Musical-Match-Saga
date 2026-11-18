@@ -88,7 +88,9 @@ import {
   restartLevel,
   nextLevel,
   autoSaveProgress,
-  showMenu,
+  handleSavedGameChangedElsewhere,
+  useThisTab,
+  leaveForOtherTab,
 } from '../src/gameController.js';
 
 function el(startHidden = false) {
@@ -127,8 +129,9 @@ describe('gameController flow', () => {
     dom.gameOverModal = el(true);
     dom.congratsModal = el(true);
     dom.congratsFinalScore = el();
-    dom.storageNotice = el(true);
-    dom.saveFailedNotice = el(true);
+    dom.otherTabModal = el(true);
+    dom.otherTabUseThisBtn = el();
+    dom.otherTabGoHomeBtn = el();
 
     // Reset the shared gameState singleton to a known baseline.
     Object.assign(gameState, {
@@ -334,30 +337,41 @@ describe('gameController flow', () => {
     expect(storageMock.saveGameProgress).not.toHaveBeenCalled();
   });
 
-  test('showMenu shows the storage note when saving is blocked', () => {
-    storageMock.canSave.mockReturnValue(false);
-    showMenu();
-    expect(dom.storageNotice.classList.contains('hidden')).toBe(false);
-  });
+  describe('saved game changed in another tab', () => {
+    test('on the home screen it refreshes the menu and shows no modal', () => {
+      storageMock.loadGameProgress.mockReturnValue({ level: 1 });
+      handleSavedGameChangedElsewhere();
+      expect(dom.otherTabModal.classList.contains('hidden')).toBe(true);
+      expect(dom.continueButton.classList.contains('hidden')).toBe(false);
+      storageMock.loadGameProgress.mockReturnValue(null);
+    });
 
-  test('showMenu hides the storage note when saving works', () => {
-    dom.storageNotice.classList.remove('hidden');
-    showMenu();
-    expect(dom.storageNotice.classList.contains('hidden')).toBe(true);
-  });
+    test('during a level it stops the timer and opens the modal', () => {
+      dom.gameBoardContainer.classList.remove('hidden');
+      gameState.timerActive = true;
+      handleSavedGameChangedElsewhere();
+      expect(timerMock.stopTimer).toHaveBeenCalled();
+      expect(gameState.timerActive).toBe(false);
+      expect(dom.otherTabModal.classList.contains('hidden')).toBe(false);
+    });
 
-  test('a failed save during a level is reported only once', () => {
-    jest.useFakeTimers();
-    storageMock.saveGameProgress.mockReturnValue(false);
-    gameState.level = 1;
-    gameState.levelComplete = false;
-    autoSaveProgress();
-    expect(dom.saveFailedNotice.classList.contains('hidden')).toBe(false);
-    jest.advanceTimersByTime(5000);
-    expect(dom.saveFailedNotice.classList.contains('hidden')).toBe(true);
-    autoSaveProgress();
-    expect(dom.saveFailedNotice.classList.contains('hidden')).toBe(true);
-    expect(storageMock.saveGameProgress).toHaveBeenCalledTimes(2);
-    jest.useRealTimers();
+    test('Use this tab saves this tab game and resumes the timer', () => {
+      dom.gameBoardContainer.classList.remove('hidden');
+      gameState.timerActive = true;
+      handleSavedGameChangedElsewhere();
+      useThisTab();
+      expect(storageMock.saveGameProgress).toHaveBeenCalled();
+      expect(timerMock.startTimer).toHaveBeenCalled();
+      expect(gameState.timerActive).toBe(true);
+      expect(dom.otherTabModal.classList.contains('hidden')).toBe(true);
+    });
+
+    test('Go home keeps the other tab save and shows the menu', () => {
+      dom.gameBoardContainer.classList.remove('hidden');
+      handleSavedGameChangedElsewhere();
+      leaveForOtherTab();
+      expect(storageMock.saveGameProgress).not.toHaveBeenCalled();
+      expect(dom.otherTabModal.classList.contains('hidden')).toBe(true);
+    });
   });
 });

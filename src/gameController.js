@@ -137,6 +137,57 @@ export function goHome() {
 }
 
 /* -----------------------------------
+   CHANGES FROM ANOTHER TAB
+----------------------------------- */
+
+let timerWasActive = false;
+
+// Called when another tab changes the saved game (the 'storage' event only
+// fires in the other tabs, never in the tab that saved).
+export function handleSavedGameChangedElsewhere() {
+  const inLevel = dom.gameBoardContainer &&
+    !dom.gameBoardContainer.classList.contains('hidden');
+
+  if (!inLevel) {
+    // Home screen: refresh Continue, Play, Best Score and Highest Level
+    showMenu();
+    return;
+  }
+
+  if (dom.otherTabModal && !dom.otherTabModal.classList.contains('hidden')) return;
+
+  timerWasActive = gameState.timerActive;
+  gameState.timerActive = false;
+  stopTimer(gameState);
+  showElement(dom.otherTabModal);
+  dom.otherTabUseThisBtn?.focus();
+  announce('This game was changed in another tab.');
+}
+
+export function useThisTab() {
+  hideElement(dom.otherTabModal);
+  autoSaveProgress();
+  if (timerWasActive) {
+    gameState.timerActive = true;
+    startTimer(
+      gameState,
+      dom.timerDisplay,
+      () => handleLevelLose(dom.restartLevelModal, dom.confirmRestartBtn, dom.confirmNextLevelBtn)
+    );
+  }
+  timerWasActive = false;
+}
+
+export function leaveForOtherTab() {
+  hideElement(dom.otherTabModal);
+  timerWasActive = false;
+  gameState.timerActive = false;
+  stopTimer(gameState);
+  // Keep the other tab's save: do not auto-save here
+  showMenu();
+}
+
+/* -----------------------------------
    STATE HELPERS
 ----------------------------------- */
 

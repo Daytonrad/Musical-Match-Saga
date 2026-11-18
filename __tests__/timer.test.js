@@ -1,7 +1,7 @@
 // timer.test.js - Unit tests for timer.js
 // Add your tests here
 
-import { startTimer, stopTimer } from '../src/timer.js';
+import { startTimer, stopTimer, pauseTimerForModal, resumeTimerAfterModal } from '../src/timer.js';
 import { gameState } from '../src/gameState.js';
 import { jest } from '@jest/globals';
 import * as ui from '../src/ui.js';
@@ -170,5 +170,44 @@ describe('timer', () => {
       expect(handleLevelLose).not.toHaveBeenCalled();
       done();
     }, 1100);
+  });
+});
+describe('pause while a modal is open', () => {
+  afterEach(() => {
+    jest.useRealTimers();
+    stopTimer(gameState);
+    gameState.timerActive = true;
+    gameState.levelComplete = false;
+    gameState.timer = 0;
+  });
+
+  test('timer does not change while paused and continues after resume', () => {
+    jest.useFakeTimers();
+    document.body.innerHTML = '<div id="timer"></div>';
+    const display = document.getElementById('timer');
+    const lose = jest.fn();
+    gameState.timer = 5;
+    gameState.movesLeft = 3;
+    gameState.levelComplete = false;
+    gameState.timerActive = true;
+    startTimer(gameState, display, lose);
+    jest.advanceTimersByTime(1000);
+    expect(gameState.timer).toBe(4);
+
+    const wasRunning = pauseTimerForModal(gameState);
+    jest.advanceTimersByTime(10000);
+    expect(gameState.timer).toBe(4);
+    expect(lose).not.toHaveBeenCalled();
+
+    resumeTimerAfterModal(gameState, wasRunning);
+    jest.advanceTimersByTime(1000);
+    expect(gameState.timer).toBe(3);
+  });
+
+  test('does not resume a timer that was not running', () => {
+    gameState.timerActive = false;
+    const wasRunning = pauseTimerForModal(gameState);
+    resumeTimerAfterModal(gameState, wasRunning);
+    expect(gameState.timerActive).toBe(false);
   });
 });
