@@ -1,7 +1,7 @@
 // storage.js - localStorage utilities for game data persistence
 import { isObjectiveKey } from './gameState.js';
 import { LEVELS } from './levels.js';
-import { BOARD_SIZE, SYMBOLS, INITIAL_LIVES } from './constants.js';
+import { BOARD_SIZE, SYMBOLS, INITIAL_LIVES, TIMER_MODES, DEFAULT_TIMER_MODE } from './constants.js';
 
 export const STORAGE_KEY = 'musicalMatchSaga';
 // Kept apart from the game save so it survives a new game and doesn't
@@ -156,4 +156,23 @@ export function isValidSaveExceptBoard(save) {
 // True if the whole save, including the board, is usable.
 export function isValidSave(save) {
   return isValidSaveExceptBoard(save) && isValidBoardState(save.boardState);
+}
+
+export function getTimerMode() {
+  try {
+    const mode = localStorage.getItem(TIMER_MODE_KEY);
+    return Object.prototype.hasOwnProperty.call(TIMER_MODES, mode) ? mode : DEFAULT_TIMER_MODE;
+  } catch {
+    return DEFAULT_TIMER_MODE;
+  }
+}
+
+export function saveTimerMode(mode) {
+  if (!Object.prototype.hasOwnProperty.call(TIMER_MODES, mode)) return false;
+  try {
+    localStorage.setItem(TIMER_MODE_KEY, mode);
+    return true;
+  } catch {
+    return false;
+  }
 }
