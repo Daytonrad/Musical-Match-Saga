@@ -7,7 +7,8 @@ import {
   saveHighestLevel,
   saveGameProgress,
   loadGameProgress,
-  clearGameProgress
+  clearGameProgress,
+  canSave
 } from '../src/storage.js';
 
 describe('storage.js', () => {
@@ -146,5 +147,17 @@ describe('storage.js', () => {
     });
     expect(saveHighScore(100)).toBe(false);
     setItemSpy.mockRestore();
+  });
+
+  test('canSave is true when localStorage works', () => {
+    expect(canSave()).toBe(true);
+  });
+
+  test('canSave is false when localStorage.setItem throws', () => {
+    const spy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('blocked');
+    });
+    expect(canSave()).toBe(false);
+    spy.mockRestore();
   });
 });

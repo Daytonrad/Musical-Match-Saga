@@ -10,7 +10,7 @@ import {
   updateTotalScoreDisplay,
   updateHighScoreDisplay
 } from './ui.js';
-import { getHighScore, saveHighScore, getHighestLevel, saveHighestLevel, loadGameProgress, clearGameProgress, saveGameProgress } from './storage.js';
+import { getHighScore, saveHighScore, getHighestLevel, saveHighestLevel, loadGameProgress, clearGameProgress, saveGameProgress, canSave } from './storage.js';
 import {
   getSafeSymbol,
   hasPossibleMoves,
@@ -23,7 +23,7 @@ import { handleLevelLose } from './levelOutcomes.js';
 import { setGameBoardRef, boardEventHandlers } from './boardEventHandlers.js';
 import { startTimer, stopTimer } from './timer.js';
 import { wireUpCellEvents } from './events.js';
-import { showElement, hideElement, formatScore } from './utils.js';
+import { showElement, hideElement, formatScore, announce } from './utils.js';
 import * as dom from './domElements.js';
 
 /* -----------------------------------
@@ -80,6 +80,15 @@ export function showMenu() {
     }
   }
   
+  // Warn if the browser is blocking storage
+  if (dom.storageNotice) {
+    if (canSave()) {
+      hideElement(dom.storageNotice);
+    } else {
+      showElement(dom.storageNotice);
+    }
+  }
+
   // Hide home button on menu
   hideElement(dom.homeBtn);
 }
@@ -164,11 +173,28 @@ function getCurrentBoardState() {
   return board;
 }
 
+let saveFailureShown = false;
+let saveFailureTimeout = null;
+
+function reportSaveFailureOnce() {
+  if (saveFailureShown) return;
+  saveFailureShown = true;
+  const message = "Couldn't save your progress. Your browser may be blocking storage.";
+  announce(message);
+  if (dom.saveFailedNotice) {
+    showElement(dom.saveFailedNotice);
+    clearTimeout(saveFailureTimeout);
+    saveFailureTimeout = setTimeout(() => hideElement(dom.saveFailedNotice), 5000);
+  }
+}
+
 export function autoSaveProgress() {
   // Only save if game is active and not at menu
   if (!gameState.levelComplete && gameState.level > 0) {
     const boardState = getCurrentBoardState();
-    saveGameProgress(gameState, boardState);
+    if (!saveGameProgress(gameState, boardState)) {
+      reportSaveFailureOnce();
+    }
   }
 }
 

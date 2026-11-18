@@ -54,3 +54,7 @@ export const congratsModal = document.getElementById('congratsModal');
 export const congratsFinalScore = document.getElementById('congratsFinalScore');
 export const congratsPlayAgainBtn = document.getElementById('congratsPlayAgainBtn');
 export const congratsHomeBtn = document.getElementById('congratsHomeBtn');
+
+// Storage warnings
+export const storageNotice = document.getElementById('storageNotice');
+export const saveFailedNotice = document.getElementById('saveFailedNotice');

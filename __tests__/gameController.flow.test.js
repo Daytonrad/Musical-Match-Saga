@@ -27,6 +27,7 @@ jest.mock('../src/storage.js', () => ({
   loadGameProgress: jest.fn(() => null),
   clearGameProgress: jest.fn(),
   saveGameProgress: jest.fn(),
+  canSave: jest.fn(() => true),
 }));
 
 jest.mock('../src/board.js', () => ({
@@ -87,6 +88,7 @@ import {
   restartLevel,
   nextLevel,
   autoSaveProgress,
+  showMenu,
 } from '../src/gameController.js';
 
 function el(startHidden = false) {
@@ -125,6 +127,8 @@ describe('gameController flow', () => {
     dom.gameOverModal = el(true);
     dom.congratsModal = el(true);
     dom.congratsFinalScore = el();
+    dom.storageNotice = el(true);
+    dom.saveFailedNotice = el(true);
 
     // Reset the shared gameState singleton to a known baseline.
     Object.assign(gameState, {
@@ -151,6 +155,8 @@ describe('gameController flow', () => {
 
     jest.clearAllMocks();
     storageMock.loadGameProgress.mockReturnValue(null);
+    storageMock.canSave.mockReturnValue(true);
+    storageMock.saveGameProgress.mockReturnValue(true);
   });
 
   test('resetGame resets level, lives, score, and totalScore', () => {
@@ -326,5 +332,32 @@ describe('gameController flow', () => {
     gameState.levelComplete = false;
     autoSaveProgress();
     expect(storageMock.saveGameProgress).not.toHaveBeenCalled();
+  });
+
+  test('showMenu shows the storage note when saving is blocked', () => {
+    storageMock.canSave.mockReturnValue(false);
+    showMenu();
+    expect(dom.storageNotice.classList.contains('hidden')).toBe(false);
+  });
+
+  test('showMenu hides the storage note when saving works', () => {
+    dom.storageNotice.classList.remove('hidden');
+    showMenu();
+    expect(dom.storageNotice.classList.contains('hidden')).toBe(true);
+  });
+
+  test('a failed save during a level is reported only once', () => {
+    jest.useFakeTimers();
+    storageMock.saveGameProgress.mockReturnValue(false);
+    gameState.level = 1;
+    gameState.levelComplete = false;
+    autoSaveProgress();
+    expect(dom.saveFailedNotice.classList.contains('hidden')).toBe(false);
+    jest.advanceTimersByTime(5000);
+    expect(dom.saveFailedNotice.classList.contains('hidden')).toBe(true);
+    autoSaveProgress();
+    expect(dom.saveFailedNotice.classList.contains('hidden')).toBe(true);
+    expect(storageMock.saveGameProgress).toHaveBeenCalledTimes(2);
+    jest.useRealTimers();
   });
 });

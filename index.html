@@ -63,6 +63,7 @@
                 <button id="howToPlayBtn"><span class="menu-icon" aria-hidden="true">ℹ️</span>How to Play</button>
                 <button id="restartGameBtn" class="hidden"><span class="menu-icon" aria-hidden="true">🔄</span>Restart Game</button>
             </div>
+            <p id="storageNotice" class="storage-notice hidden" role="status">Your browser is blocking storage, so your progress and best score won't be saved.</p>
         </div>
 
         <!-- GAME BOARD -->
@@ -166,6 +167,7 @@
     <footer class="site-footer" style="text-align:center; padding:16px 0; color:#666;">
         <a href="privacy.html">Privacy Policy</a>
     </footer>
+    <div id="saveFailedNotice" class="save-failed-notice hidden" aria-hidden="true">Couldn't save your progress. Your browser may be blocking storage.</div>
     <div id="sr-announcer" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
     <script type="module" src="src/script.js"></script>
 </body>
