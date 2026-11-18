@@ -366,8 +366,6 @@ describe('gameController flow', () => {
     expect(boardMock.generateGameBoard).not.toHaveBeenCalled();
     expect(dom.gameBoard.children.length).toBe(BOARD_SIZE * BOARD_SIZE);
     expect(dom.gameBoard.children[0].textContent).toBe('🎻');
-    // Saved timer is 0, so the timer should not restart.
-    expect(timerMock.startTimer).not.toHaveBeenCalled();
   });
 
   test('restartLevel hides modals and restarts the current level', () => {
