@@ -4,6 +4,9 @@ import { LEVELS } from './levels.js';
 import { BOARD_SIZE, SYMBOLS, INITIAL_LIVES } from './constants.js';
 
 export const STORAGE_KEY = 'musicalMatchSaga';
+// Kept apart from the game save so it survives a new game and doesn't
+// trigger the "changed in another tab" warning.
+const TIMER_MODE_KEY = 'musicalMatchSaga.timerMode';
 
 function readStore() {
   try {
