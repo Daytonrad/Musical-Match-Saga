@@ -201,6 +201,8 @@ Contributions are welcome, from developers, designers and players alike. Some is
 
 To see what's planned and what's already in progress, check the [project board](https://github.com/users/hannahro15/projects/16).
 
+**Please wait to be assigned to an issue before you start working on it or open a pull request.** Comment on the issue to ask for it, and I'll assign it to you.
+
 Read the [contributing guide](CONTRIBUTING.md) to get started. By taking part, you agree to follow the [code of conduct](CODE_OF_CONDUCT.md).
 
 ---

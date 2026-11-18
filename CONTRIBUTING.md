@@ -2,6 +2,9 @@
 
 Thanks for wanting to help with Musical Match Saga! 🎵
 
+> [!IMPORTANT]
+> Please wait until an issue is assigned to you before you start working on it or open a pull request. Comment on the issue to say you'd like to take it, and I'll assign it to you. This stops two people working on the same thing.
+
 ## Finding something to work on
 
 - New to the project? Look for issues labelled [`good first issue`](https://github.com/hannahro15/Musical-Match-Saga/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22). They're small, self-contained tasks that are a good place to start.
@@ -42,7 +45,7 @@ The game is plain HTML, CSS and JavaScript, so there's no build step. You'll nee
    ```bash
    git switch -c short-description-of-change
    ```
-3. Keep each pull request to one issue, and keep it small.
+3. Keep each pull request to one issue that's been assigned to you, and keep it small.
 4. If you add or change a level in `src/levels.js`, play it through to check it can be won with the moves and time it gives.
 5. Check your change works on a phone-sized screen and using only a keyboard.
 6. Add or update tests in `__tests__/` for any change to how the game behaves.
