@@ -20,10 +20,6 @@ export function areAdjacent(cellA, cellB, gameBoard, BOARD_SIZE) {
     return adjacent;
 }
 
-export function getRandomSymbol(SYMBOLS) {
-  return SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
-}
-
 export function scoreForMatch(matchSize) {
   if (matchSize === 3) return 10;
   if (matchSize === 4) return 20;
