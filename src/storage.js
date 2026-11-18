@@ -23,6 +23,19 @@ function writeStore(parsed) {
   }
 }
 
+// Returns true only if this browser lets us write to and remove from
+// localStorage (it can be blocked, or full).
+export function canSave() {
+  try {
+    const testKey = STORAGE_KEY + '.test';
+    localStorage.setItem(testKey, '1');
+    localStorage.removeItem(testKey);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function getHighScore() {
   return readStore().highScore || 0;
 }

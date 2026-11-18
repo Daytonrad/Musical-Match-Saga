@@ -27,6 +27,7 @@ jest.mock('../src/storage.js', () => ({
   loadGameProgress: jest.fn(() => null),
   clearGameProgress: jest.fn(),
   saveGameProgress: jest.fn(),
+  canSave: jest.fn(() => true),
 }));
 
 jest.mock('../src/board.js', () => ({
@@ -157,6 +158,8 @@ describe('gameController flow', () => {
 
     jest.clearAllMocks();
     storageMock.loadGameProgress.mockReturnValue(null);
+    storageMock.canSave.mockReturnValue(true);
+    storageMock.saveGameProgress.mockReturnValue(true);
   });
 
   test('resetGame resets level, lives, score, and totalScore', () => {
