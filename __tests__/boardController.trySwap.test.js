@@ -47,7 +47,7 @@ import * as levelsMock from '../src/levels.js';
 import * as levelOutcomesMock from '../src/levelOutcomes.js';
 import { autoSaveProgress } from '../src/gameController.js';
 import { trySwap, setBoardControllerDeps } from '../src/boardController.js';
-import { gameState } from '../src/gameState.js';
+import { gameState, setSelectedCell } from '../src/gameState.js';
 
 const LEVEL_CONFIG = {
   objectives: [{ symbol: '🎻', label: 'violin', count: 5 }],
@@ -90,6 +90,20 @@ describe('trySwap', () => {
       totalScore: 0,
     });
     delete gameState.violinLeft;
+  });
+
+  test('clears the selected tile, including a stale copy, when a swap starts', async () => {
+    const staleCopy = makeCell('🎶');
+    staleCopy.classList.add('selected');
+    gameBoard.append(staleCopy);
+    setSelectedCell(sourceCell);
+    sourceCell.classList.add('selected');
+    boardMock.findMatches.mockReturnValueOnce([]);
+
+    await trySwap(sourceCell, targetCell);
+
+    expect(gameState.selectedCell).toBeNull();
+    expect(gameBoard.querySelectorAll('.selected').length).toBe(0);
   });
 
   test('reverts the swap and does nothing else when it creates no match', async () => {
