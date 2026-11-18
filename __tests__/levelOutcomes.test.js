@@ -316,7 +316,7 @@ describe('levelOutcomes', () => {
       handleLevelLose(null, null, null);
 
       expect(isHidden('gameOverNewBest')).toBe(false);
-      expect(announced()).toBe(`Game over. New best score: ${(1240).toLocaleString()}!`);
+      expect(announced()).toBe(`Game over. New best score: 1,240!`);
     });
 
     test('game over hides the new best line when the score does not beat the best', () => {
@@ -327,7 +327,7 @@ describe('levelOutcomes', () => {
       handleLevelLose(null, null, null);
 
       expect(isHidden('gameOverNewBest')).toBe(true);
-      expect(announced()).toBe(`Game over. You've run out of lives. Total score: ${(1240).toLocaleString()}.`);
+      expect(announced()).toBe(`Game over. You've run out of lives. Total score: 1,240.`);
     });
 
     test('game over hides the line again when an earlier result had shown it', () => {
@@ -360,7 +360,7 @@ describe('levelOutcomes', () => {
       handleLevelWin();
 
       expect(isHidden('congratsNewBest')).toBe(false);
-      expect(announced()).toBe(`Congratulations! You completed all levels. New best score: ${(5400).toLocaleString()}!`);
+      expect(announced()).toBe(`Congratulations! You completed all levels. New best score: 5,400!`);
     });
 
     test('finishing the last level hides the new best line when the score does not beat the best', () => {
@@ -371,7 +371,7 @@ describe('levelOutcomes', () => {
       handleLevelWin();
 
       expect(isHidden('congratsNewBest')).toBe(true);
-      expect(announced()).toBe(`Congratulations! You completed all levels with a total score of ${(5400).toLocaleString()}.`);
+      expect(announced()).toBe(`Congratulations! You completed all levels with a total score of 5,400.`);
     });
 
     test('a level that is not the last never shows the new best line', () => {

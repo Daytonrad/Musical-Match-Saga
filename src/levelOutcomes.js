@@ -36,8 +36,8 @@ export function handleLevelWin() {
         toggleNewBest('congratsNewBest', isNewBest);
         if (congratsModal) congratsModal.classList.remove('hidden');
         announce(isNewBest
-            ? `Congratulations! You completed all levels. New best score: ${finalScore.toLocaleString()}!`
-            : `Congratulations! You completed all levels with a total score of ${finalScore.toLocaleString()}.`);
+            ? `Congratulations! You completed all levels. New best score: ${formatScore(finalScore)}!`
+            : `Congratulations! You completed all levels with a total score of ${formatScore(finalScore)}.`);
         return;
     }
 
@@ -84,8 +84,8 @@ export function handleLevelLose(restartContainer, restartBtn, nextLevelBtn) {
             gameOverModal.classList.remove('hidden');
         }
         announce(isNewBest
-            ? `Game over. New best score: ${finalScore.toLocaleString()}!`
-            : `Game over. You've run out of lives. Total score: ${finalScore.toLocaleString()}.`);
+            ? `Game over. New best score: ${formatScore(finalScore)}!`
+            : `Game over. You've run out of lives. Total score: ${formatScore(finalScore)}.`);
         return;
     }
 
