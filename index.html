@@ -43,9 +43,9 @@
         <div class="home-top">
             <div class="title-wrapper">
                 <h1>
-                <span class="title-note">🎵</span>
+                <span class="title-note" aria-hidden="true">🎵</span>
                 <span class="title-text">Musical Match Saga</span>
-                <span class="title-note">🎶</span>
+                <span class="title-note" aria-hidden="true">🎶</span>
                 </h1>
                 <em class="subtitle">Start your musical match-three adventure!</em>
             </div>
@@ -58,10 +58,10 @@
                 <div id="highestLevelDisplay" class="highest-level hidden" aria-live="polite" aria-label="Highest level">Highest Level: 0</div>
             </div>
             <div class="menu hidden" role="navigation" aria-label="Main Menu">
-                <button id="playBtn"><span class="menu-icon">🎮</span>Play Game</button>
-                <button id="continueBtn" class="hidden"><span class="continue-icon">▶️</span>Continue Your Adventure</button>
-                <button id="howToPlayBtn"><span class="menu-icon">ℹ️</span>How to Play</button>
-                <button id="restartGameBtn" class="hidden"><span class="menu-icon">🔄</span>Restart Game</button>
+                <button id="playBtn"><span class="menu-icon" aria-hidden="true">🎮</span>Play Game</button>
+                <button id="continueBtn" class="hidden"><span class="continue-icon" aria-hidden="true">▶️</span>Continue Your Adventure</button>
+                <button id="howToPlayBtn"><span class="menu-icon" aria-hidden="true">ℹ️</span>How to Play</button>
+                <button id="restartGameBtn" class="hidden"><span class="menu-icon" aria-hidden="true">🔄</span>Restart Game</button>
             </div>
         </div>
 
@@ -71,7 +71,7 @@
                 <div class="top-bar-custom">
                     <div id="levelDisplay" class="hidden level-center" aria-live="polite" aria-label="Current level">LEVEL 1</div>
                     <div id="livesDisplay" aria-live="polite" aria-label="Lives remaining"><span id="livesCount">5</span></div>
-                    <button id="homeBtn" class="hidden home-btn">🏠 Home</button>
+                    <button id="homeBtn" class="hidden home-btn"><span aria-hidden="true">🏠</span> Home</button>
                 </div>
                 <div id="objective-counters" aria-label="Objectives"></div>
                 <div class="moves-score-timer-row">
@@ -137,17 +137,17 @@
         <div id="howToPlayModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="howToPlay">
             <div class="modal-content how-to-play-content">
                 <button id="closeHowToPlay" class="close" aria-label="Close">&times;</button>
-                <h2 id="howToPlay">How to Play 🎵</h2>
+                <h2 id="howToPlay">How to Play <span aria-hidden="true">🎵</span></h2>
                 <p class="how-to-play-intro">Match musical symbols, hit your objectives, and score as highly as you can before time or moves run out.</p>
                 <ul class="how-to-play-list">
-                    <li><strong>🎮 Swap adjacent tiles</strong> to make a match of 3 or more.</li>
-                    <li><strong>📱 Tap a tile, then tap an adjacent one</strong> to swap them — or swipe a tile in the direction you want it to move.</li>
-                    <li><strong>🎯 Complete the level objectives</strong> shown above the board before you run out of moves or time.</li>
-                    <li><strong>🎼 Each level is different</strong> and may ask you to collect specific instruments.</li>
-                    <li><strong>🏆 Bigger matches score more</strong>, and combos or chain reactions give bonus points.</li>
-                    <li><strong>💡 Plan carefully</strong> and use your moves wisely to build your best score.</li>
+                    <li><strong><span aria-hidden="true">🎮</span> Swap adjacent tiles</strong> to make a match of 3 or more.</li>
+                    <li><strong><span aria-hidden="true">📱</span> Tap a tile, then tap an adjacent one</strong> to swap them — or swipe a tile in the direction you want it to move.</li>
+                    <li><strong><span aria-hidden="true">🎯</span> Complete the level objectives</strong> shown above the board before you run out of moves or time.</li>
+                    <li><strong><span aria-hidden="true">🎼</span> Each level is different</strong> and may ask you to collect specific instruments.</li>
+                    <li><strong><span aria-hidden="true">🏆</span> Bigger matches score more</strong>, and combos or chain reactions give bonus points.</li>
+                    <li><strong><span aria-hidden="true">💡</span> Plan carefully</strong> and use your moves wisely to build your best score.</li>
                 </ul>
-                <p class="how-to-play-footer">Good luck and have fun building your best score! ✨</p>
+                <p class="how-to-play-footer">Good luck and have fun building your best score! <span aria-hidden="true">✨</span></p>
             </div>
         </div>
 
