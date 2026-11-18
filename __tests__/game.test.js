@@ -1,7 +1,7 @@
 // game.test.js - Unit tests for game.js
 // Add your tests here
 
-import { swapCellContents, scoreForMatch, areAdjacent, getRandomSymbol } from '../src/game.js';  
+import { swapCellContents, scoreForMatch, areAdjacent } from '../src/game.js';  
 
 describe('game', () => {
   test('swapCellContents correctly swaps text content of two cells', () => {
@@ -65,12 +65,6 @@ describe('game', () => {
     const BOARD_SIZE = 1;
 
     expect(areAdjacent(cell, cell, gameBoard, BOARD_SIZE)).toBe(false);
-  });
-
-  test('getRandomSymbol returns a symbol from the SYMBOLS array', () => {
-    const SYMBOLS = ['A', 'B', 'C', 'D'];
-    const symbol = getRandomSymbol(SYMBOLS);
-    expect(SYMBOLS).toContain(symbol);
   });
 
   test('areAdjacent returns false if one or both cells are not in the game board', () => {

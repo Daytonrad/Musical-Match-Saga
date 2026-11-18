@@ -105,7 +105,7 @@ export async function handleTouchEnd(
  * another cell is already selected and this one is adjacent — swaps them.
  * This is the accessible counterpart to drag/swipe: it's what fires for a
  * plain tap, a mouse click, Enter/Space on a focused cell, and (critically
- * for the Android build) a TalkBack double-tap, none of which reliably
+ * for screen reader users) a TalkBack or VoiceOver double-tap, none of which reliably
  * produce the raw touchmove-based swipe gesture above.
  * @param {Event} event
  * @param {Object} gameState
