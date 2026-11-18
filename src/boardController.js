@@ -4,7 +4,7 @@ import { swapCellContents, scoreForMatch } from './game.js';
 import { getLevelConfig } from './levels.js';
 import { findMatches, dropAndRefill, hasPossibleMoves, updateCellClass } from './board.js';
 import { updateMovesDisplay, updateScoreDisplay, updateObjectiveCounters, updateTotalScoreDisplay } from './ui.js';
-import { gameState } from './gameState.js';
+import { gameState, setSelectedCell } from './gameState.js';
 import { BOARD_SIZE, SYMBOLS } from './constants.js';
 import { getSafeSymbol } from './board.js';
 import { wireUpCellEvents } from './events.js';
@@ -35,6 +35,10 @@ export function setBoardControllerDeps(deps) {
 export async function trySwap(sourceCell, targetCell) {
   if (gameState.isResolving || gameState.levelComplete || !gameState.timerActive) return;
   gameState.isResolving = true;
+
+  // Clear any tap selection, including a stale copy no longer in gameState
+  gameBoard.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+  setSelectedCell(null);
 
   const matchResult = await swapAndCheckMatch(sourceCell, targetCell);
   if (!matchResult) {
