@@ -32,6 +32,11 @@ export function handleDragStart(event, gameState, setDraggedCell) {
     if (gameState.isResolving) { event.preventDefault(); return; }
     if (!event.target.classList.contains('cell')) return;
     setDraggedCell(event.target);
+    // Firefox only starts a drag when data is set in dragstart
+    if (event.dataTransfer) {
+        event.dataTransfer.setData('text/plain', '');
+        event.dataTransfer.effectAllowed = 'move';
+    }
 }
 
 /**

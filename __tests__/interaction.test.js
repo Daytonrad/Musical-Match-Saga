@@ -26,6 +26,17 @@ describe('handleDragStart', () => {
     expect(event.preventDefault).not.toHaveBeenCalled();
   });
 
+  test('sets drag data so Firefox starts the drag', () => {
+    const cell = document.createElement('div');
+    cell.classList.add('cell');
+    const dataTransfer = { setData: jest.fn(), effectAllowed: '' };
+    const event = { target: cell, preventDefault: jest.fn(), dataTransfer };
+
+    handleDragStart(event, gameState, setDraggedCell);
+    expect(dataTransfer.setData).toHaveBeenCalledWith('text/plain', '');
+    expect(dataTransfer.effectAllowed).toBe('move');
+  });
+
   test('prevents default when resolving', () => {
     gameState.isResolving = true;
     const cell = document.createElement('div');
