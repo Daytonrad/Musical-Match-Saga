@@ -8,7 +8,9 @@ import {
   saveGameProgress,
   loadGameProgress,
   clearGameProgress,
-  canSave
+  canSave,
+  getTimerMode,
+  saveTimerMode
 } from '../src/storage.js';
 
 describe('storage.js', () => {
@@ -159,5 +161,27 @@ describe('storage.js', () => {
     });
     expect(canSave()).toBe(false);
     spy.mockRestore();
+  });
+
+  test('getTimerMode defaults to normal', () => {
+    expect(getTimerMode()).toBe('normal');
+  });
+
+  test('saveTimerMode remembers each option, apart from the game save', () => {
+    saveGameProgress({ level: 1, lives: 5, score: 0, totalScore: 0, movesLeft: 10, timer: 30 }, []);
+    for (const mode of ['extra', 'off', 'normal']) {
+      expect(saveTimerMode(mode)).toBe(true);
+      expect(getTimerMode()).toBe(mode);
+    }
+    saveTimerMode('off');
+    clearGameProgress();
+    expect(getTimerMode()).toBe('off');
+  });
+
+  test('saveTimerMode ignores unknown options, and a bad stored value falls back to normal', () => {
+    expect(saveTimerMode('fast')).toBe(false);
+    expect(getTimerMode()).toBe('normal');
+    localStorage.setItem('musicalMatchSaga.timerMode', 'toString');
+    expect(getTimerMode()).toBe('normal');
   });
 });

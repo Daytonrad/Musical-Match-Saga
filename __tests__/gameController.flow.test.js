@@ -75,6 +75,7 @@ jest.mock('../src/levelOutcomes.js', () => ({
 import * as storageMock from '../src/storage.js';
 import * as boardMock from '../src/board.js';
 import * as timerMock from '../src/timer.js';
+import * as levelOutcomesMock from '../src/levelOutcomes.js';
 import { LEVELS as mockLevels } from '../src/levels.js';
 import { gameState } from '../src/gameState.js';
 import { INITIAL_LIVES } from '../src/constants.js';
@@ -144,6 +145,7 @@ describe('gameController flow', () => {
       timer: 0,
       timerInterval: null,
       timerActive: false,
+      timerMode: 'normal',
       lives: INITIAL_LIVES,
       draggedCell: null,
       touchStartCell: null,
@@ -185,6 +187,47 @@ describe('gameController flow', () => {
     expect(gameState.alphaLeft).toBe(2);
     expect(dom.levelDisplay.textContent).toBe('LEVEL 1');
     expect(boardMock.generateGameBoard).toHaveBeenCalled();
+    expect(timerMock.startTimer).toHaveBeenCalled();
+  });
+
+  test('startLevel with Extra time doubles the level timer', () => {
+    gameState.timerMode = 'extra';
+    startLevel(1);
+    expect(gameState.timer).toBe(mockLevels[0].timer * 2);
+    expect(timerMock.startTimer).toHaveBeenCalled();
+    expect(dom.timerDisplay.classList.contains('hidden')).toBe(false);
+  });
+
+  test('startLevel with No timer hides the timer and never starts it', () => {
+    gameState.timerMode = 'off';
+    startLevel(1);
+    expect(gameState.timer).toBe(0);
+    expect(gameState.timerActive).toBe(true); // the player can still move
+    expect(timerMock.startTimer).not.toHaveBeenCalled();
+    expect(dom.timerDisplay.classList.contains('hidden')).toBe(true);
+    expect(levelOutcomesMock.handleLevelLose).not.toHaveBeenCalled();
+  });
+
+  test('continueGame with No timer does not start the timer', () => {
+    gameState.timerMode = 'off';
+    storageMock.loadGameProgress.mockReturnValueOnce({
+      level: 1, lives: 3, score: 0, totalScore: 0, movesLeft: 8, timer: 20,
+      objectives: { alphaLeft: 2 }, boardState: [],
+    });
+    continueGame();
+    expect(timerMock.startTimer).not.toHaveBeenCalled();
+    expect(gameState.timerActive).toBe(true);
+    expect(dom.timerDisplay.classList.contains('hidden')).toBe(true);
+  });
+
+  test('continueGame gives a level saved with no timer its full time once the timer is back on', () => {
+    gameState.timerMode = 'normal';
+    storageMock.loadGameProgress.mockReturnValueOnce({
+      level: 1, lives: 3, score: 0, totalScore: 0, movesLeft: 8, timer: 0,
+      objectives: { alphaLeft: 2 }, boardState: [],
+    });
+    continueGame();
+    expect(gameState.timer).toBe(mockLevels[0].timer);
     expect(timerMock.startTimer).toHaveBeenCalled();
   });
 
@@ -270,8 +313,8 @@ describe('gameController flow', () => {
     expect(boardMock.generateGameBoard).not.toHaveBeenCalled();
     expect(dom.gameBoard.children.length).toBe(4);
     expect(dom.gameBoard.children[0].textContent).toBe('A');
-    // Saved timer is 0, so the timer should not restart.
-    expect(timerMock.startTimer).not.toHaveBeenCalled();
+    // Saved timer is 0 (saved with the timer off), so it gets the level's full time.
+    expect(timerMock.startTimer).toHaveBeenCalled();
   });
 
   test('restartLevel hides modals and restarts the current level', () => {

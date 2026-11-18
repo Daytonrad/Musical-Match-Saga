@@ -1,7 +1,11 @@
 // storage.js - localStorage utilities for game data persistence
 import { isObjectiveKey } from './gameState.js';
+import { TIMER_MODES, DEFAULT_TIMER_MODE } from './constants.js';
 
 export const STORAGE_KEY = 'musicalMatchSaga';
+// Kept apart from the game save so it survives a new game and doesn't
+// trigger the "changed in another tab" warning.
+const TIMER_MODE_KEY = 'musicalMatchSaga.timerMode';
 
 function readStore() {
   try {
@@ -103,4 +107,23 @@ export function clearGameProgress() {
     return writeStore(parsed);
   }
   return false;
+}
+
+export function getTimerMode() {
+  try {
+    const mode = localStorage.getItem(TIMER_MODE_KEY);
+    return Object.prototype.hasOwnProperty.call(TIMER_MODES, mode) ? mode : DEFAULT_TIMER_MODE;
+  } catch {
+    return DEFAULT_TIMER_MODE;
+  }
+}
+
+export function saveTimerMode(mode) {
+  if (!Object.prototype.hasOwnProperty.call(TIMER_MODES, mode)) return false;
+  try {
+    localStorage.setItem(TIMER_MODE_KEY, mode);
+    return true;
+  } catch {
+    return false;
+  }
 }
