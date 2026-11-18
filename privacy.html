@@ -4,50 +4,69 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Privacy Policy — Musical Match Saga</title>
+  <meta name="description" content="How the Musical Match Saga web game handles your data: no accounts, no tracking, and saved progress that stays in your browser." />
+  <link rel="canonical" href="https://hannahro15.github.io/Musical-Match-Saga/privacy.html" />
+  <meta name="theme-color" content="#6c5ce7" />
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; max-width: 760px; margin: 40px auto; padding: 0 20px; line-height: 1.6; color: #222; }
-    h1,h2 { color: #333; }
-    a { color: #0077cc; }
-    footer { margin-top: 40px; font-size: 0.9rem; color: #666; }
+    @font-face {
+      font-family: 'Pacifico';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('styles/fonts/pacifico-latin.woff2') format('woff2');
+    }
+    :root { --color-primary: #6c5ce7; --color-primary-dark: #5849c7; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; max-width: 760px; margin: 40px auto; padding: 0 20px; line-height: 1.6; color: #222; background: #ede7fa; }
+    h1 { font-family: 'Pacifico', cursive; font-weight: 400; color: var(--color-primary-dark); }
+    h2 { color: var(--color-primary-dark); }
+    a { color: var(--color-primary-dark); }
+    a:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; }
+    footer { margin-top: 40px; font-size: 0.9rem; color: #444; }
   </style>
 </head>
 <body>
   <header>
     <h1>Privacy Policy</h1>
-    <p>Last updated: 1 September 2026</p>
+    <p>Last updated: 18 November 2026</p>
   </header>
 
   <section>
-    <p>Musical Match Saga (“we”, “us”, or “the App”) is committed to protecting your privacy. This policy explains what information the App collects, how it is used, and your choices.</p>
-    <p><strong>In short: this app collects no personal data and uses no analytics, tracking, or advertising SDKs of any kind. Game progress and preferences are stored only locally on your device, and are never transmitted anywhere.</strong></p>
+    <p>This policy describes how the Musical Match Saga web game (“this game”) handles information when you play it in your browser.</p>
+    <p><strong>In short: the game has no accounts and no analytics, advertising or tracking code. Your progress is saved in your browser's <code>localStorage</code> for this site and is not sent anywhere by the game.</strong></p>
   </section>
 
-  <h2>Information We Collect</h2>
+  <h2>What is stored in your browser</h2>
+  <p>The game saves data under a single <code>localStorage</code> key (<code>musicalMatchSaga</code>) for this site. It contains:</p>
   <ul>
-    <li><strong>No personal account required:</strong> The game does not require you to sign in.</li>
-    <li><strong>Local device storage:</strong> We store non-personal game progress and preferences locally on your device (using <code>localStorage</code>), such as level progress, highest level reached, and high score.</li>
-    <li><strong>No analytics or tracking:</strong> The App does not collect analytics, advertising identifiers, or other usage tracking data.</li>
+    <li>your high score and the highest level you have reached;</li>
+    <li>if you leave a level part-way through, a saved copy of that level so you can continue: the level number, lives, score, total score, moves left, timer, the board layout, the objective counters and a timestamp.</li>
+  </ul>
+  <p>This data is only used to restore your game when you come back. It contains no name, email address or other account details. The game's code does not send it to any server.</p>
+
+  <h2>What the game does not do</h2>
+  <ul>
+    <li>It does not ask you to sign in or create an account.</li>
+    <li>It does not contain analytics, advertising or tracking code, and it does not show ads.</li>
+    <li>Its own code makes no network requests to send data about you or your play anywhere. The game's code, styles and font are all served from this site.</li>
   </ul>
 
-  <h2>How We Use Information</h2>
-  <p>Data stored locally is used only to restore your game state and preferences across sessions on your device.</p>
+  <h2>Hosting</h2>
+  <p>This site is hosted on GitHub Pages. As with any web host, GitHub may process technical information such as your IP address when your browser requests the pages. I do not receive or control that data, and I have not checked exactly what GitHub records; see <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub's privacy statement</a> for details.</p>
 
-  <h2>Third-Party Services</h2>
-  <p>The app does not send gameplay or personal data to third-party analytics or advertising services.</p>
-
-  <h2>Advertising</h2>
-  <p>This app does not display ads.</p>
-
-  <h2>Your Choices</h2>
+  <h2>Your choices</h2>
   <ul>
-    <li>You can clear your browser's site data for this game to remove locally stored progress.</li>
+    <li>You can remove your saved progress at any time by clearing this site's data in your browser's settings. Your high score, highest level and any saved level will be lost.</li>
+    <li>Data in <code>localStorage</code> stays on the device and browser you used, and is not shared between devices.</li>
   </ul>
+
+  <h2>Changes</h2>
+  <p>If the game changes in a way that affects what it stores or sends, this page will be updated and the date above changed.</p>
 
   <h2>Contact</h2>
   <p>For privacy-related enquiries, please open an issue on the project's <a href="https://github.com/hannahro15/Musical-Match-Saga">GitHub repository</a>.</p>
 
   <footer>
-    <p>Developer: Musical Match Saga.</p>
+    <p>Made by Hannah Olbrich.</p>
     <p><a href="index.html">Return to the game</a></p>
   </footer>
 </body>
