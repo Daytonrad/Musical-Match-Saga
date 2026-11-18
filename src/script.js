@@ -2,6 +2,8 @@
 
 import { setBoardControllerDeps } from './boardController.js';
 import { showElement, hideElement } from './utils.js';
+import { gameState } from './gameState.js';
+import { pauseTimerForModal, resumeTimerAfterModal } from './timer.js';
 import * as dom from './domElements.js';
 import {
   showMenu,
@@ -37,6 +39,8 @@ function bindEvents() {
       if (!dom.gameBoardContainer.classList.contains('hidden')) {
         const modal = document.getElementById('confirmHomeModal');
         modal.classList.remove('hidden');
+        // Pause the countdown while the modal is open
+        const wasRunning = pauseTimerForModal(gameState);
         // Focus the close button for accessibility
         const closeBtn = document.getElementById('closeConfirmHomeModal');
         if (closeBtn) closeBtn.focus();
@@ -55,9 +59,11 @@ function bindEvents() {
         }
         function handleCancel() {
           cleanup();
+          resumeTimerAfterModal(gameState, wasRunning);
         }
         function handleClose() {
           cleanup();
+          resumeTimerAfterModal(gameState, wasRunning);
         }
         function handleCloseKey(e) {
           if (e.key === 'Enter' || e.key === ' ') {

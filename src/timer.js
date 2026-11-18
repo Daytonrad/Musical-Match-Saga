@@ -27,3 +27,14 @@ export function stopTimer(gameState) {
     clearInterval(gameState.timerInterval);
     gameState.timerInterval = null;
 }
+
+// Pauses the countdown while a modal is open. Returns whether it was running.
+export function pauseTimerForModal(gameState) {
+    const wasRunning = !gameState.levelComplete && gameState.timerActive;
+    if (wasRunning) gameState.timerActive = false;
+    return wasRunning;
+}
+
+export function resumeTimerAfterModal(gameState, wasRunning) {
+    if (wasRunning && !gameState.levelComplete) gameState.timerActive = true;
+}
