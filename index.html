@@ -10,6 +10,23 @@
     <link rel="stylesheet" href="styles/home.css">
     <link rel="stylesheet" href="styles/game.css">
     <link rel="stylesheet" href="styles/modals.css">
+    <link rel="modulepreload" href="src/board.js">
+    <link rel="modulepreload" href="src/boardController.js">
+    <link rel="modulepreload" href="src/boardEventHandlers.js">
+    <link rel="modulepreload" href="src/constants.js">
+    <link rel="modulepreload" href="src/domElements.js">
+    <link rel="modulepreload" href="src/events.js">
+    <link rel="modulepreload" href="src/game.js">
+    <link rel="modulepreload" href="src/gameController.js">
+    <link rel="modulepreload" href="src/gameState.js">
+    <link rel="modulepreload" href="src/interaction.js">
+    <link rel="modulepreload" href="src/levelOutcomes.js">
+    <link rel="modulepreload" href="src/levels.js">
+    <link rel="modulepreload" href="src/script.js">
+    <link rel="modulepreload" href="src/storage.js">
+    <link rel="modulepreload" href="src/timer.js">
+    <link rel="modulepreload" href="src/ui.js">
+    <link rel="modulepreload" href="src/utils.js">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#6c5ce7">
     <meta name="color-scheme" content="light">
@@ -96,6 +113,7 @@
                 <h2 id="gameOver">Game Over</h2>
                 <p>You've run out of lives!</p>
                 <p id="gameOverFinalScore" style="font-size: 1.3em; font-weight: 600; color: #6c5ce7; margin: 15px 0;">Total Score: 0</p>
+                <p id="gameOverNewBest" class="new-best hidden">New best score!</p>
                 <button id="gameOverPlayAgainBtn" aria-label="Play Again">Play Again</button>
                 <button id="gameOverHomeBtn" aria-label="Home">Home</button>
             </div>
@@ -107,6 +125,7 @@
                 <h2>Congratulations!</h2>
                 <p>You have completed all levels of Musical Match Saga!</p>
                 <p id="congratsFinalScore" style="font-size: 1.3em; font-weight: 600; color: #6c5ce7; margin: 15px 0;">Total Score: 0</p>
+                <p id="congratsNewBest" class="new-best hidden">New best score!</p>
                 <p>Would you like to play again or go back to the home screen?</p>
                 <button id="congratsPlayAgainBtn" aria-label="Play Again">Play Again</button>
                 <button id="congratsHomeBtn" aria-label="Home">Home</button>

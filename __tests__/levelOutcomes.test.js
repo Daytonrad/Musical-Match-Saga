@@ -281,4 +281,108 @@ describe('levelOutcomes', () => {
     document.body.removeChild(congratsModal);
     document.body.removeChild(congratsFinalScore);
   });
+  describe('new best score', () => {
+    const setUpResultModals = () => {
+      document.body.innerHTML = `
+        <div id="sr-announcer"></div>
+        <div id="gameOverModal" class="modal hidden">
+          <p id="gameOverFinalScore"></p>
+          <p id="gameOverNewBest" class="new-best hidden">New best score!</p>
+        </div>
+        <div id="congratsModal" class="modal hidden">
+          <p id="congratsFinalScore"></p>
+          <p id="congratsNewBest" class="new-best hidden">New best score!</p>
+        </div>`;
+    };
+    const announced = () => {
+      jest.advanceTimersByTime(60);
+      return document.getElementById('sr-announcer').textContent;
+    };
+    const isHidden = (id) => document.getElementById(id).classList.contains('hidden');
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      setUpResultModals();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    test('game over shows and announces a new best score', () => {
+      gameState.lives = 1;
+      gameState.totalScore = 1240;
+
+      handleLevelLose(null, null, null);
+
+      expect(isHidden('gameOverNewBest')).toBe(false);
+      expect(announced()).toBe(`Game over. New best score: ${(1240).toLocaleString()}!`);
+    });
+
+    test('game over hides the new best line when the score does not beat the best', () => {
+      localStorage.setItem('musicalMatchSaga', JSON.stringify({ highScore: 2000 }));
+      gameState.lives = 1;
+      gameState.totalScore = 1240;
+
+      handleLevelLose(null, null, null);
+
+      expect(isHidden('gameOverNewBest')).toBe(true);
+      expect(announced()).toBe(`Game over. You've run out of lives. Total score: ${(1240).toLocaleString()}.`);
+    });
+
+    test('game over hides the line again when an earlier result had shown it', () => {
+      gameState.lives = 1;
+      gameState.totalScore = 1240;
+      handleLevelLose(null, null, null);
+      expect(isHidden('gameOverNewBest')).toBe(false);
+
+      gameState.levelComplete = false;
+      gameState.lives = 1;
+      gameState.totalScore = 300;
+      handleLevelLose(null, null, null);
+
+      expect(isHidden('gameOverNewBest')).toBe(true);
+    });
+
+    test('a score of zero is never a new best', () => {
+      gameState.lives = 1;
+      gameState.totalScore = 0;
+
+      handleLevelLose(null, null, null);
+
+      expect(isHidden('gameOverNewBest')).toBe(true);
+    });
+
+    test('finishing the last level shows and announces a new best score', () => {
+      gameState.level = LEVELS.length;
+      gameState.totalScore = 5400;
+
+      handleLevelWin();
+
+      expect(isHidden('congratsNewBest')).toBe(false);
+      expect(announced()).toBe(`Congratulations! You completed all levels. New best score: ${(5400).toLocaleString()}!`);
+    });
+
+    test('finishing the last level hides the new best line when the score does not beat the best', () => {
+      localStorage.setItem('musicalMatchSaga', JSON.stringify({ highScore: 9000 }));
+      gameState.level = LEVELS.length;
+      gameState.totalScore = 5400;
+
+      handleLevelWin();
+
+      expect(isHidden('congratsNewBest')).toBe(true);
+      expect(announced()).toBe(`Congratulations! You completed all levels with a total score of ${(5400).toLocaleString()}.`);
+    });
+
+    test('a level that is not the last never shows the new best line', () => {
+      document.body.insertAdjacentHTML('beforeend', '<div id="nextLevelModal" class="modal hidden"></div>');
+      gameState.level = 1;
+      gameState.totalScore = 800;
+
+      handleLevelWin();
+
+      expect(isHidden('congratsNewBest')).toBe(true);
+      expect(isHidden('gameOverNewBest')).toBe(true);
+    });
+  });
 });
