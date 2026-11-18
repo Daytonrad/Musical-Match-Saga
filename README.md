@@ -19,7 +19,9 @@ Musical Match Saga is a browser-based match-3 puzzle game with a musical twist. 
 5. [Project Structure](#project-structure)
 6. [Testing](#testing)
 7. [Roadmap](#roadmap)
-8. [Credits](#credits)
+8. [Contributing](#contributing)
+9. [License](#license)
+10. [Credits](#credits)
 
 ---
 
@@ -108,7 +110,7 @@ Musical-Match-Saga/
 │   ├── home.css                  # home/menu screen
 │   ├── game.css                  # game board and HUD
 │   ├── modals.css                # restart, next level, game over and congratulations pop-ups
-│   └── fonts/                    # self-hosted Pacifico webfont (no external font requests)
+│   └── fonts/                    # self-hosted Pacifico webfont and its licence (OFL.txt)
 │
 ├── images/                       # screenshots and app icons
 ├── .github/workflows/
@@ -124,6 +126,9 @@ Musical-Match-Saga/
 ├── jest.config.js                # test configuration
 ├── package.json                  # dev dependencies and scripts
 ├── package-lock.json
+├── CONTRIBUTING.md               # how to contribute
+├── CODE_OF_CONDUCT.md            # community standards
+├── LICENSE                       # MIT License
 └── README.md
 ```
 
@@ -168,9 +173,23 @@ As of the last full run (189 tests), project-wide statement coverage is ~97%, wi
 
 ---
 
+## Contributing
+
+Contributions are welcome, from developers, designers and players alike. Some issues, like testing the game with a screen reader or on different phones, need no coding at all.
+
+Read the [contributing guide](CONTRIBUTING.md) to get started. By taking part, you agree to follow the [code of conduct](CODE_OF_CONDUCT.md).
+
+---
+
+## License
+
+The code is licensed under the [MIT License](LICENSE).
+
+---
+
 ## Credits
 
-- Created and maintained by Hannah Olbrich (solo project).
-- This project is not open source and does not accept external contributions. All rights reserved.
+- Created and maintained by Hannah Olbrich.
+- Title font: [Pacifico](https://github.com/googlefonts/Pacifico) by The Pacifico Project Authors, licensed under the [SIL Open Font License 1.1](styles/fonts/OFL.txt), not the MIT License.
 - Emoji icons from [Unicode](https://unicode.org/emoji/).
 - AI-assisted development with GitHub Copilot.
