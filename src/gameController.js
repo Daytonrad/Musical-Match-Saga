@@ -10,7 +10,7 @@ import {
   updateTotalScoreDisplay,
   updateHighScoreDisplay
 } from './ui.js';
-import { getHighScore, saveHighScore, getHighestLevel, saveHighestLevel, loadGameProgress, clearGameProgress, saveGameProgress, canSave } from './storage.js';
+import { getHighScore, saveHighScore, getHighestLevel, saveHighestLevel, loadGameProgress, clearGameProgress, saveGameProgress, canSave, isValidSaveExceptBoard, isValidBoardState } from './storage.js';
 import {
   getSafeSymbol,
   hasPossibleMoves,
@@ -317,7 +317,17 @@ export function continueGame() {
     startGame();
     return;
   }
-  
+
+  // A damaged or outdated save must never break the game
+  if (!isValidSaveExceptBoard(savedProgress)) {
+    startGame();
+    announce("Your saved game couldn't be loaded, so a new game was started.");
+    return;
+  }
+
+  // Only the board is bad: keep the progress and make a fresh board
+  const boardState = isValidBoardState(savedProgress.boardState) ? savedProgress.boardState : null;
+
   // Restore game state
   gameState.level = savedProgress.level;
   gameState.lives = savedProgress.lives;
@@ -348,7 +358,7 @@ export function continueGame() {
   }
   
   // Restore board state
-  restoreBoardState(savedProgress.boardState);
+  restoreBoardState(boardState);
   
   // Update UI
   renderLevel(config);
