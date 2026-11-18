@@ -4,6 +4,8 @@ import { LEVELS } from './levels.js';
 import { saveHighScore, saveHighestLevel, clearGameProgress } from './storage.js';
 import { announce, formatScore } from './utils.js';
 import { stopTimer } from './timer.js';
+import { MOVE_BONUS, TIME_BONUS } from './constants.js';
+import { updateScoreDisplay, updateTotalScoreDisplay } from './ui.js';
 
 // Show the "New best score!" line of a result modal only when a record was set.
 function toggleNewBest(id, isNewBest) {
@@ -11,11 +13,41 @@ function toggleNewBest(id, isNewBest) {
     if (line) line.classList.toggle('hidden', !isNewBest);
 }
 
+// Adds points for moves and seconds left to the score and total score, and
+// returns a short text describing the bonus for the result modal.
+function applyWinBonus() {
+    const movesLeft = Math.max(0, Number(gameState.movesLeft) || 0);
+    const timeLeft = Math.max(0, Number(gameState.timer) || 0);
+    const moveBonus = movesLeft * MOVE_BONUS;
+    const timeBonus = timeLeft * TIME_BONUS;
+    const total = moveBonus + timeBonus;
+    gameState.score += total;
+    gameState.totalScore += total;
+
+    const scoreEl = document.getElementById('scoreDisplay');
+    const totalEl = document.getElementById('totalScoreDisplay');
+    if (scoreEl) updateScoreDisplay(scoreEl, gameState.score);
+    if (totalEl) updateTotalScoreDisplay(totalEl, gameState.totalScore);
+
+    return {
+        total,
+        spoken: total > 0 ? ' ' : '',
+        text: `Moves left: ${movesLeft} × ${MOVE_BONUS} = +${formatScore(moveBonus)}. ` +
+            `Time left: ${timeLeft}s × ${TIME_BONUS} = +${formatScore(timeBonus)}.`
+    };
+}
+
+function showBonus(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+}
+
 export function handleLevelWin() {
     gameState.levelComplete = true;
     gameState.timerActive = false;
     stopTimer(gameState);
     const isFinalLevel = gameState.level >= LEVELS.length;
+    const bonus = applyWinBonus();
 
     if (isFinalLevel) {
         // gameState.totalScore is already kept live in sync with each
@@ -33,20 +65,22 @@ export function handleLevelWin() {
         if (congratsFinalScore) {
             congratsFinalScore.textContent = `Total Score: ${formatScore(finalScore)}`;
         }
+        showBonus('congratsBonus', bonus.text);
         toggleNewBest('congratsNewBest', isNewBest);
         if (congratsModal) congratsModal.classList.remove('hidden');
         announce(isNewBest
-            ? `Congratulations! You completed all levels. New best score: ${formatScore(finalScore)}!`
-            : `Congratulations! You completed all levels with a total score of ${formatScore(finalScore)}.`);
+            ? `Congratulations! You completed all levels.${bonus.spoken}${bonus.spoken && bonus.text} New best score: ${formatScore(finalScore)}!`
+            : `Congratulations! You completed all levels with a total score of ${formatScore(finalScore)}.${bonus.spoken}${bonus.spoken && bonus.text}`);
         return;
     }
 
     // Show next level modal and ensure Next Level button is visible
     const nextLevelModal = document.getElementById('nextLevelModal');
     const confirmNextLevelBtn = document.getElementById('confirmNextLevelBtn');
+    showBonus('levelBonus', bonus.text);
     if (nextLevelModal) nextLevelModal.classList.remove('hidden');
     if (confirmNextLevelBtn) confirmNextLevelBtn.classList.remove('hidden');
-    announce(`Level ${gameState.level} complete! Ready for the next challenge.`);
+    announce(`Level ${gameState.level} complete!${bonus.spoken}${bonus.spoken && bonus.text} Ready for the next challenge.`);
 }
 
 export function handleLevelLose(restartContainer, restartBtn, nextLevelBtn) {

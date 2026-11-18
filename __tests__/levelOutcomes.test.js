@@ -15,6 +15,8 @@ describe('levelOutcomes', () => {
     gameState.level = 1;
     gameState.score = 0;
     gameState.totalScore = 0;
+    gameState.movesLeft = 0;
+    gameState.timer = 0;
     document.body.innerHTML = '';
     localStorage.clear();
   });
@@ -34,6 +36,22 @@ describe('levelOutcomes', () => {
 
     // Clean up
     document.body.removeChild(nextLevelModal);
+  });
+
+  test('handleLevelWin adds a bonus once for moves and time left', () => {
+    document.body.innerHTML = '<div id="nextLevelModal" class="hidden"></div><p id="levelBonus"></p>';
+    gameState.movesLeft = 4;
+    gameState.timer = 23;
+    gameState.score = 100;
+    gameState.totalScore = 300;
+
+    handleLevelWin();
+
+    // 4 x 20 + 23 x 2 = 126
+    expect(gameState.score).toBe(226);
+    expect(gameState.totalScore).toBe(426);
+    expect(document.getElementById('levelBonus').textContent).toContain('Moves left: 4 × 20 = +80');
+    expect(document.getElementById('levelBonus').textContent).toContain('Time left: 23s × 2 = +46');
   });
 
   test('handleLevelWin shows congratulations modal on the final level', () => {

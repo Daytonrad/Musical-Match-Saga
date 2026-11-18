@@ -57,6 +57,7 @@ Musical Match Saga is a free match-3 puzzle game with a musical twist, for deskt
 On top of that:
 
 - **Several matches at once:** +20 for each match after the first.
+- **Level bonus:** when you win a level, +20 for each move left and +2 for each second left.
 - **Chain reactions:** when falling tiles make new matches, each wave after the first adds 20 × its place in the chain (+40 for the 2nd wave, +60 for the 3rd, and so on).
 
 ---
