@@ -5,6 +5,11 @@ import { saveHighScore, saveHighestLevel, clearGameProgress } from './storage.js
 import { announce } from './utils.js';
 import { stopTimer } from './timer.js';
 
+// Show the "New best score!" line of a result modal only when a record was set.
+function toggleNewBest(id, isNewBest) {
+    const line = document.getElementById(id);
+    if (line) line.classList.toggle('hidden', !isNewBest);
+}
 
 export function handleLevelWin() {
     gameState.levelComplete = true;
@@ -19,7 +24,7 @@ export function handleLevelWin() {
         const finalScore = gameState.totalScore;
         gameState.score = 0;
 
-        saveHighScore(finalScore);
+        const isNewBest = saveHighScore(finalScore);
         saveHighestLevel(LEVELS.length);
         clearGameProgress();
 
@@ -28,8 +33,11 @@ export function handleLevelWin() {
         if (congratsFinalScore) {
             congratsFinalScore.textContent = `Total Score: ${finalScore.toLocaleString()}`;
         }
+        toggleNewBest('congratsNewBest', isNewBest);
         if (congratsModal) congratsModal.classList.remove('hidden');
-        announce(`Congratulations! You completed all levels with a total score of ${finalScore.toLocaleString()}.`);
+        announce(isNewBest
+            ? `Congratulations! You completed all levels. New best score: ${finalScore.toLocaleString()}!`
+            : `Congratulations! You completed all levels with a total score of ${finalScore.toLocaleString()}.`);
         return;
     }
 
@@ -63,7 +71,7 @@ export function handleLevelLose(restartContainer, restartBtn, nextLevelBtn) {
         gameState.score = 0;
 
         // Save high score if it's a new record and clear saved progress
-        saveHighScore(finalScore);
+        const isNewBest = saveHighScore(finalScore);
         clearGameProgress();
 
         const gameOverModal = document.getElementById('gameOverModal');
@@ -71,10 +79,13 @@ export function handleLevelLose(restartContainer, restartBtn, nextLevelBtn) {
         if (gameOverFinalScore) {
             gameOverFinalScore.textContent = `Total Score: ${finalScore.toLocaleString()}`;
         }
+        toggleNewBest('gameOverNewBest', isNewBest);
         if (gameOverModal) {
             gameOverModal.classList.remove('hidden');
         }
-        announce(`Game over. You've run out of lives. Total score: ${finalScore.toLocaleString()}.`);
+        announce(isNewBest
+            ? `Game over. New best score: ${finalScore.toLocaleString()}!`
+            : `Game over. You've run out of lives. Total score: ${finalScore.toLocaleString()}.`);
         return;
     }
 

@@ -197,3 +197,18 @@
   box-shadow: 0 0 0 3px #d1c4e9;
   outline: none;
 }
+/* "New best score!" line of the Game Over and Congratulations modals.
+   The global reduced-motion rule in base.css turns the pop off. */
+.new-best {
+  margin: 0 0 15px;
+  font-size: 1.15em;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  animation: new-best-pop 0.5s ease-out;
+}
+
+@keyframes new-best-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
