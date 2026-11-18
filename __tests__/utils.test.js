@@ -1,4 +1,4 @@
-import { showElement, hideElement, announce } from '../src/utils.js';
+import { showElement, hideElement, announce, formatScore } from '../src/utils.js';
 
 describe('utils', () => {
   test('showElement removes hidden class', () => {
@@ -63,5 +63,11 @@ describe('announce', () => {
     announcer.textContent = 'previous';
     announce('');
     expect(announcer.textContent).toBe('previous');
+  });
+
+  test('formatScore adds thousands separators', () => {
+    expect(formatScore(0)).toBe('0');
+    expect(formatScore(1240)).toBe('1,240');
+    expect(formatScore(113580)).toBe('113,580');
   });
 });

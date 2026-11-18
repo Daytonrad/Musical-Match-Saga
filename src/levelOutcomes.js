@@ -2,7 +2,7 @@
 import { gameState } from './gameState.js';
 import { LEVELS } from './levels.js';
 import { saveHighScore, saveHighestLevel, clearGameProgress } from './storage.js';
-import { announce } from './utils.js';
+import { announce, formatScore } from './utils.js';
 import { stopTimer } from './timer.js';
 
 
@@ -26,10 +26,10 @@ export function handleLevelWin() {
         const congratsModal = document.getElementById('congratsModal');
         const congratsFinalScore = document.getElementById('congratsFinalScore');
         if (congratsFinalScore) {
-            congratsFinalScore.textContent = `Total Score: ${finalScore.toLocaleString()}`;
+            congratsFinalScore.textContent = `Total Score: ${formatScore(finalScore)}`;
         }
         if (congratsModal) congratsModal.classList.remove('hidden');
-        announce(`Congratulations! You completed all levels with a total score of ${finalScore.toLocaleString()}.`);
+        announce(`Congratulations! You completed all levels with a total score of ${formatScore(finalScore)}.`);
         return;
     }
 
@@ -69,12 +69,12 @@ export function handleLevelLose(restartContainer, restartBtn, nextLevelBtn) {
         const gameOverModal = document.getElementById('gameOverModal');
         const gameOverFinalScore = document.getElementById('gameOverFinalScore');
         if (gameOverFinalScore) {
-            gameOverFinalScore.textContent = `Total Score: ${finalScore.toLocaleString()}`;
+            gameOverFinalScore.textContent = `Total Score: ${formatScore(finalScore)}`;
         }
         if (gameOverModal) {
             gameOverModal.classList.remove('hidden');
         }
-        announce(`Game over. You've run out of lives. Total score: ${finalScore.toLocaleString()}.`);
+        announce(`Game over. You've run out of lives. Total score: ${formatScore(finalScore)}.`);
         return;
     }
 

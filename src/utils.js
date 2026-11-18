@@ -1,5 +1,15 @@
 // utils.js - General utility functions
 
+/**
+ * Formats a score with thousands separators, using a fixed locale so it looks
+ * the same for every player.
+ * @param {number} n
+ * @returns {string}
+ */
+export function formatScore(n) {
+  return n.toLocaleString('en-GB');
+}
+
 export function showElement(element) {
   if (element) {
     element.classList.remove('hidden');

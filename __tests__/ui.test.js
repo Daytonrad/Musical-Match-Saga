@@ -138,4 +138,16 @@ describe('UI functions', () => {
     updateTotalScoreDisplay(totalScoreDisplay, 500);
     expect(totalScoreDisplay.textContent).toBe('Total Score: 500');
   });
+
+  test('score displays format large numbers with thousands separators', () => {
+    const score = document.createElement('div');
+    const total = document.createElement('div');
+    const best = document.createElement('div');
+    updateScoreDisplay(score, 1240);
+    updateTotalScoreDisplay(total, 13580);
+    updateHighScoreDisplay(best, 113580);
+    expect(score.textContent).toBe('Score: 1,240');
+    expect(total.textContent).toBe('Total Score: 13,580');
+    expect(best.textContent).toBe('Best Score: 113,580');
+  });
 });
