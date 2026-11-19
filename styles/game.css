@@ -326,7 +326,7 @@
   box-sizing: border-box;
 }
 
-#objective-counters span {
+#objective-counters > span {
   color: #2f335c;
   padding: 2px 4px;
   font-size: 0.95em;
@@ -346,8 +346,7 @@
 }
 
 #objective-counters .done .objective-symbol {
-  padding: 0;
-  opacity: 0.5;
+  opacity: 0.8;
 }
 
 /* =========================
@@ -374,7 +373,7 @@
     padding: 12px 20px;
   }
 
-  #objective-counters span {
+  #objective-counters > span {
     font-size: 1.05em;
     padding: 2px 6px;
   }
