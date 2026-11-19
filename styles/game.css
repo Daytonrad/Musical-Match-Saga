@@ -188,6 +188,7 @@
 .level-center {
   flex: 0 1 auto;
   text-align: left;
+  text-transform: uppercase;
   font-size: 1.15rem;
   font-weight: 700;
   padding: 10px 16px;
