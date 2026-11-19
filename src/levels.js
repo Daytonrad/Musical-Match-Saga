@@ -8,12 +8,9 @@ export const LEVELS = [
       { symbol: '🎹', label: 'piano', count: 5 }
     ],
     timer: 75,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎺', '🥁', '🎷', '🎵'],
-    note: 'Intro level - easy start'
   },
 
-  // Level 2: Three objectives, moderate
+  // Level 2: Three objectives introduced, moderate
   {
     moves: 16,
     objectives: [
@@ -22,12 +19,9 @@ export const LEVELS = [
       { symbol: '🎻', label: 'violin', count: 4 }
     ],
     timer: 75,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎹', '🎷', '🎵'],
-    note: 'Three objectives introduced'
   },
 
-  // Level 3: Three objectives, moderate
+  // Level 3: Three objectives, higher counts introduced
   {
     moves: 16,
     objectives: [
@@ -36,12 +30,9 @@ export const LEVELS = [
       { symbol: '🎹', label: 'piano', count: 5 }
     ],
     timer: 75,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎻', '🥁', '🎵'],
-    note: 'Higher counts introduced'
   },
 
-  // Level 4: Three objectives, new symbol
+  // Level 4: Three objectives, musical note introduced as objective
   {
     moves: 18,
     objectives: [
@@ -50,12 +41,9 @@ export const LEVELS = [
       { symbol: '🥁', label: 'drum', count: 6 }
     ],
     timer: 75,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎻', '🎹', '🎺'],
-    note: 'Musical note introduced as objective'
   },
 
-  // Level 5: Three objectives, higher counts
+  // Level 5: Three objectives, higher counts, timer tightens slightly
   {
     moves: 20,
     objectives: [
@@ -64,12 +52,9 @@ export const LEVELS = [
       { symbol: '🎺', label: 'trumpet', count: 6 }
     ],
     timer: 70,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎷', '🥁', '🎵'],
-    note: 'Timer tightens slightly'
   },
 
-  // Level 6: Three objectives, distractor symbols
+  // Level 6: Three objectives, distractor symbols, higher counts
   {
     moves: 20,
     objectives: [
@@ -78,12 +63,9 @@ export const LEVELS = [
       { symbol: '🎵', label: 'musicalNote', count: 6 }
     ],
     timer: 70,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎻', '🎹', '🎷'],
-    note: 'Higher counts, more distractors'
   },
 
-  // Level 7: Three objectives, lower moves
+  // Level 7: Three objectives, lower moves, timer getting tighter
   {
     moves: 22,
     objectives: [
@@ -92,12 +74,9 @@ export const LEVELS = [
       { symbol: '🥁', label: 'drum', count: 6 }
     ],
     timer: 65,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎻', '🎹', '🎺'],
-    note: 'Timer getting tighter'
   },
 
-  // Level 8: Timed rush with distractors
+  // Level 8: Timed rush - short timer, more distractors, fast-paced
   {
     moves: 24,
     objectives: [
@@ -106,12 +85,9 @@ export const LEVELS = [
       { symbol: '🎺', label: 'trumpet', count: 8 }
     ],
     timer: 60,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎷', '🥁', '🎵'],
-    note: 'Short timer, more distractors, fast-paced'
   },
 
-  // Level 9: Four objectives
+  // Level 9: Four objectives, tight timer
   {
     moves: 26,
     objectives: [
@@ -121,13 +97,10 @@ export const LEVELS = [
       { symbol: '🎺', label: 'trumpet', count: 6 }
     ],
     timer: 55,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: [],
     comboChallenge: true,
-    note: 'Four objectives, tight timer'
   },
 
-  // Level 10: Five objectives, ultimate challenge
+  // Level 10: Five objectives - end of act one!
   {
     moves: 28,
     objectives: [
@@ -138,13 +111,10 @@ export const LEVELS = [
       { symbol: '🎵', label: 'musicalNote', count: 6 }
     ],
     timer: 50,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: [],
     comboChallenge: true,
-    note: 'Five objectives - end of act one!'
   },
 
-  // Level 11: Fresh start, two objectives, easier
+  // Level 11: Act two begins - fresh start, two objectives, easier, breathing room before the ramp
   {
     moves: 25,
     objectives: [
@@ -152,12 +122,9 @@ export const LEVELS = [
       { symbol: '🎵', label: 'musicalNote', count: 8 }
     ],
     timer: 90,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎻', '🎹', '🎷', '🥁'],
-    note: 'Act two begins - breathing room before ramp'
   },
 
-  // Level 12: Three objectives
+  // Level 12: Three objectives, higher counts
   {
     moves: 26,
     objectives: [
@@ -166,12 +133,9 @@ export const LEVELS = [
       { symbol: '🎺', label: 'trumpet', count: 6 }
     ],
     timer: 85,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎻', '🎷', '🎵'],
-    note: 'Three objectives, higher counts'
   },
 
-  // Level 13: Three objectives
+  // Level 13: Three objectives, difficulty ramping again
   {
     moves: 28,
     objectives: [
@@ -180,12 +144,9 @@ export const LEVELS = [
       { symbol: '🥁', label: 'drum', count: 8 }
     ],
     timer: 85,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎹', '🎺', '🎷'],
-    note: 'Difficulty ramping again'
   },
 
-  // Level 14: Four objectives
+  // Level 14: Four objectives return
   {
     moves: 28,
     objectives: [
@@ -195,12 +156,9 @@ export const LEVELS = [
       { symbol: '🥁', label: 'drum', count: 6 }
     ],
     timer: 80,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎻', '🎷'],
-    note: 'Four objectives return'
   },
 
-  // Level 15: Three objectives, higher counts
+  // Level 15: Three objectives, higher counts, high saxophone count challenge
   {
     moves: 30,
     objectives: [
@@ -209,12 +167,9 @@ export const LEVELS = [
       { symbol: '🥁', label: 'drum', count: 8 }
     ],
     timer: 80,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎹', '🎺', '🎵'],
-    note: 'High saxophone count challenge'
   },
 
-  // Level 16: Four objectives
+  // Level 16: Four objectives, balanced counts
   {
     moves: 30,
     objectives: [
@@ -224,12 +179,9 @@ export const LEVELS = [
       { symbol: '🥁', label: 'drum', count: 8 }
     ],
     timer: 75,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎺', '🎷'],
-    note: 'Four objectives, balanced counts'
   },
 
-  // Level 17: Four objectives, tighter
+  // Level 17: Four objectives, tighter, high counts
   {
     moves: 32,
     objectives: [
@@ -239,12 +191,9 @@ export const LEVELS = [
       { symbol: '🎹', label: 'piano', count: 8 }
     ],
     timer: 75,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎻', '🥁'],
-    note: 'High counts across four objectives'
   },
 
-  // Level 18: Five objectives
+  // Level 18: Five objectives, tight timer
   {
     moves: 32,
     objectives: [
@@ -255,12 +204,9 @@ export const LEVELS = [
       { symbol: '🎹', label: 'piano', count: 6 }
     ],
     timer: 70,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎷'],
-    note: 'Five objectives, tight timer'
   },
 
-  // Level 19: Five objectives, very tight
+  // Level 19: Five objectives, very tight timer
   {
     moves: 34,
     objectives: [
@@ -271,13 +217,10 @@ export const LEVELS = [
       { symbol: '🎵', label: 'musicalNote', count: 8 }
     ],
     timer: 65,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: ['🎻'],
     comboChallenge: true,
-    note: 'Five objectives, very tight timer'
   },
 
-  // Level 20: Ultimate - all six instruments
+  // Level 20: Ultimate - all six instruments, the grand finale!
   {
     moves: 35,
     objectives: [
@@ -289,10 +232,7 @@ export const LEVELS = [
       { symbol: '🎵', label: 'musicalNote', count: 8 }
     ],
     timer: 60,
-    winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0),
-    distractors: [],
     comboChallenge: true,
-    note: 'All six instruments - the grand finale!'
   }
 ];
 

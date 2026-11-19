@@ -1,6 +1,8 @@
 // add tests for levels.js
 
 import { LEVELS, getLevelConfig } from '../src/levels.js';
+import { checkWinCondition } from '../src/boardController.js';
+import { gameState } from '../src/gameState.js';
 
 describe('LEVELS', () => {
 
@@ -23,33 +25,6 @@ describe('LEVELS', () => {
     expect(uniqueObjectiveSets.size).toBe(LEVELS.length);
   });
 
-
-  test('winConditions returns true when all objectives are met', () => {
-    const levelConfig = {
-      objectives: { A: 2, B: 3 },
-      moves: 10,
-      timer: 60
-    };
-    const matchedCounts = { A: 2, B: 3 };
-    const checkWinCondition = (config, counts) => {
-      return Object.keys(config.objectives).every(symbol => counts[symbol] >= config.objectives[symbol]);
-    };
-    expect(checkWinCondition(levelConfig, matchedCounts)).toBe(true);
-  });
-
-  test('winConditions returns false when at least one objective is not met', () => {
-    const levelConfig = {
-      objectives: { A: 2, B: 3 },
-      moves: 10,
-      timer: 60
-    };
-    const matchedCounts = { A: 2, B: 2 };
-    const checkWinCondition = (config, counts) => {
-      return Object.keys(config.objectives).every(symbol => counts[symbol] >= config.objectives[symbol]);
-    };
-    expect(checkWinCondition(levelConfig, matchedCounts)).toBe(false);
-  });
-
   test('valid level returns the correct level configuration', () => {
     const levelIndex = 0;
     const levelConfig = LEVELS[levelIndex];
@@ -65,42 +40,11 @@ describe('LEVELS', () => {
     expect(levelConfig).toBeUndefined();
   });
 
-  test('winCondition function works correctly for a sample level', () => {
-    const levelConfig = {
-      objectives: [
-        { symbol: 'A', label: 'red', count: 2 },
-        { symbol: 'B', label: 'blue', count: 3 }
-      ],
-      moves: 10,
-      timer: 60,
-      winCondition: (state) => state.objectives.every(obj => state[obj.label + 'Left'] === 0)
-    };
-    const gameState = {
-      objectives: levelConfig.objectives,
-      redLeft: 0,
-      blueLeft: 0
-    };
-    expect(levelConfig.winCondition(gameState)).toBe(true);
-    gameState.redLeft = 1;
-    expect(levelConfig.winCondition(gameState)).toBe(false);
-    gameState.redLeft = 0;
-    gameState.blueLeft = 1;
-    expect(levelConfig.winCondition(gameState)).toBe(false);
-  });
-
-  test('distractors are defined for each level', () => {
+  test('levels do not carry the unused winCondition, distractors or note fields', () => {
     LEVELS.forEach(level => {
-      expect(level).toHaveProperty('distractors');
-      expect(Array.isArray(level.distractors)).toBe(true);
-    });
-  });
-
-  test('distractors do not overlap with objectives', () => {
-    LEVELS.forEach(level => {
-      const objectiveSymbols = level.objectives.map(obj => obj.symbol);
-      level.distractors.forEach(distractor => {
-        expect(objectiveSymbols).not.toContain(distractor);
-      });
+      expect(level).not.toHaveProperty('winCondition');
+      expect(level).not.toHaveProperty('distractors');
+      expect(level).not.toHaveProperty('note');
     });
   });
 
@@ -126,18 +70,26 @@ describe('LEVELS', () => {
     const config = getLevelConfig(levelNum);
     expect(config).toBeUndefined();
   });
+});
 
-  test('every level\'s own winCondition is true when all its objectives are met and false otherwise', () => {
-    LEVELS.forEach((level) => {
-      const metState = { objectives: level.objectives };
-      level.objectives.forEach((obj) => {
-        metState[obj.label + 'Left'] = 0;
+describe('checkWinCondition', () => {
+
+  test('is true for every level when all its objectives are met', () => {
+    LEVELS.forEach(level => {
+      level.objectives.forEach(obj => {
+        gameState[obj.label + 'Left'] = 0;
       });
-      expect(level.winCondition(metState)).toBe(true);
+      expect(checkWinCondition(level)).toBe(true);
+    });
+  });
 
-      // Leave the first objective unmet.
-      const unmetState = { ...metState, [level.objectives[0].label + 'Left']: 1 };
-      expect(level.winCondition(unmetState)).toBe(false);
+  test('is false for every level when its first objective is unmet', () => {
+    LEVELS.forEach(level => {
+      level.objectives.forEach(obj => {
+        gameState[obj.label + 'Left'] = 0;
+      });
+      gameState[level.objectives[0].label + 'Left'] = 1;
+      expect(checkWinCondition(level)).toBe(false);
     });
   });
 });
