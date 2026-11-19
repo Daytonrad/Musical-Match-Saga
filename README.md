@@ -192,7 +192,7 @@ npm run lint             # check the code with ESLint
 
 The coverage report is written to `coverage/lcov-report/index.html`. Open it in your browser to see coverage by file and line.
 
-There are 294 tests. The coverage report counts every file in `src/` (see `collectCoverageFrom` in `jest.config.js`), including files no test imports directly. Across all of `src/` the tests cover about 95% of statements and 83% of branches, and `src/script.js`, the entry point, has its own tests in `__tests__/script.test.js`.
+The coverage report counts every file in `src/` (see `collectCoverageFrom` in `jest.config.js`), including files no test imports directly, so a new untested file shows up at 0% instead of being left out. Across all of `src/` the tests cover about 95% of statements and 83% of branches, and `src/script.js`, the entry point, has its own tests in `__tests__/script.test.js`.
 
 The tests also run automatically on every pull request, and before every deploy.
 
