@@ -5,4 +5,10 @@ export default {
   },
   testEnvironment: 'jsdom',
   moduleNameMapper: {},
+  coverageThreshold: {
+    global: {
+      statements: 85,
+      branches: 75,
+    },
+  },
 };
