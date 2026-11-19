@@ -20,7 +20,7 @@ export function showMenuPage(heading, subtitle, menu, gameBoard, movesDisplay, s
 }
 
 export function updateLivesDisplay(livesDisplay, lives) {
-  livesDisplay.textContent = `❤️ Lives: ${lives}`;
+  livesDisplay.innerHTML = `<span aria-hidden="true">❤️</span> Lives: ${lives}`;
 }
 
 export function updateMovesDisplay(movesDisplay, movesLeft) {

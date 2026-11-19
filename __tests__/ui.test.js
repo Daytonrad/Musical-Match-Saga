@@ -1,6 +1,8 @@
 // ui.test.js - Unit tests for ui.js
 // Add your tests here
 
+import fs from 'fs';
+import path from 'path';
 import { updateObjectiveCounters, updateMovesDisplay, updateLivesDisplay, updateScoreDisplay, updateTimerDisplay, showMenuPage, updateHighScoreDisplay, updateTotalScoreDisplay } from '../src/ui.js';
 
 describe('UI functions', () => {
@@ -71,6 +73,23 @@ describe('UI functions', () => {
     const livesDisplay = document.createElement('div');
     updateLivesDisplay(livesDisplay, 3);
     expect(livesDisplay.textContent).toBe('❤️ Lives: 3');
+  });
+
+  test('updateLivesDisplay hides the heart from screen readers', () => {
+    const livesDisplay = document.createElement('div');
+    updateLivesDisplay(livesDisplay, 3);
+    const heart = livesDisplay.querySelector('span[aria-hidden="true"]');
+    expect(heart.textContent).toBe('❤️');
+  });
+
+  test('the lives counter in index.html starts with the markup updateLivesDisplay writes', () => {
+    const html = fs.readFileSync(path.resolve(__dirname, '..', 'index.html'), 'utf8');
+    const page = document.createElement('div');
+    page.innerHTML = html.match(/<div id="livesDisplay"[^>]*>[\s\S]*?<\/div>/)[0];
+    const startingDisplay = page.firstElementChild;
+    const updatedDisplay = document.createElement('div');
+    updateLivesDisplay(updatedDisplay, 5);
+    expect(startingDisplay.innerHTML).toBe(updatedDisplay.innerHTML);
   });
   
   test('updateMovesDisplay updates the moves display element correctly', () => {
