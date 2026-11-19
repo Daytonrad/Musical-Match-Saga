@@ -192,7 +192,7 @@ describe('gameController flow', () => {
     expect(gameState.timerActive).toBe(true);
     expect(gameState.score).toBe(0);
     expect(gameState.alphaLeft).toBe(2);
-    expect(dom.levelDisplay.textContent).toBe('LEVEL 1');
+    expect(dom.levelDisplay.textContent).toBe('Level 1');
     expect(boardMock.generateGameBoard).toHaveBeenCalled();
     expect(timerMock.startTimer).toHaveBeenCalled();
   });
