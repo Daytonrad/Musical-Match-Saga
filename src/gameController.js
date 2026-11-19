@@ -10,7 +10,7 @@ import {
   updateTotalScoreDisplay,
   updateHighScoreDisplay
 } from './ui.js';
-import { getHighScore, saveHighScore, getHighestLevel, saveHighestLevel, loadGameProgress, clearGameProgress, saveGameProgress, canSave, saveTimerMode, isValidSaveExceptBoard, isValidBoardState } from './storage.js';
+import { getHighScore, getHighestLevel, saveHighestLevel, loadGameProgress, clearGameProgress, saveGameProgress, canSave, saveTimerMode, isValidSaveExceptBoard, isValidBoardState } from './storage.js';
 import {
   getSafeSymbol,
   hasPossibleMoves,
@@ -23,7 +23,7 @@ import { handleLevelLose } from './levelOutcomes.js';
 import { setGameBoardRef, boardEventHandlers } from './boardEventHandlers.js';
 import { startTimer, stopTimer } from './timer.js';
 import { wireUpCellEvents } from './events.js';
-import { showElement, hideElement, formatScore, announce } from './utils.js';
+import { showElement, hideElement, announce } from './utils.js';
 import * as dom from './domElements.js';
 
 /* -----------------------------------
@@ -506,21 +506,10 @@ export function nextLevel() {
   // already reflects the level just completed — adding gameState.score
   // again here would double-count it.
 
-  if (gameState.level >= LEVELS.length) {
-    // Game completed - save high score and highest level
-    saveHighScore(gameState.totalScore);
-    saveHighestLevel(LEVELS.length);
-    clearGameProgress(); // Clear saved progress when game is completed
-
-    // Display final score in congratulations modal
-    if (dom.congratsFinalScore) {
-      dom.congratsFinalScore.textContent = `Total Score: ${formatScore(gameState.totalScore)}`;
-    }
-
-    showElement(dom.congratsModal);
-    hideElement(dom.nextLevelModal);
-    return;
-  }
+  // The final level never reaches this function: handleLevelWin() shows
+  // the congratulations modal instead of the Level Complete modal, and it
+  // owns the end-of-game logic (high score, clearing progress).
+  if (gameState.level >= LEVELS.length) return;
   
   // Save highest level reached
   saveHighestLevel(gameState.level);
