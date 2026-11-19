@@ -8,7 +8,8 @@ import {
   updateScoreDisplay,
   updateLivesDisplay,
   updateTotalScoreDisplay,
-  updateHighScoreDisplay
+  updateHighScoreDisplay,
+  updateTimerDisplay
 } from './ui.js';
 import { getHighScore, getHighestLevel, saveHighestLevel, loadGameProgress, clearGameProgress, saveGameProgress, canSave, saveTimerMode, isValidSaveExceptBoard, isValidBoardState } from './storage.js';
 import {
@@ -390,6 +391,7 @@ export function continueGame() {
     // Saved while the timer was off: give the level its full time
     gameState.timer = config.timer * TIMER_MODES[gameState.timerMode].factor;
   }
+  updateTimerDisplay(dom.timerDisplay, gameState.timer);
   if (config.timer && gameState.timer > 0) {
     gameState.timerActive = true;
     startTimer(
@@ -482,6 +484,8 @@ export function startLevel(levelNumber) {
 
 function renderLevel(config) {
   dom.levelDisplay.textContent = 'Level ' + gameState.level;
+
+  updateTimerDisplay(dom.timerDisplay, gameState.timer);
   updateMovesDisplay(dom.movesDisplay, gameState.movesLeft);
   updateScoreDisplay(dom.scoreDisplay, gameState.score);
   updateLivesDisplay(dom.livesDisplay, gameState.lives);
