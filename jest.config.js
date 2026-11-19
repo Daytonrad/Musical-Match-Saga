@@ -5,4 +5,5 @@ export default {
   },
   testEnvironment: 'jsdom',
   moduleNameMapper: {},
+  collectCoverageFrom: ['src/**/*.js'],
 };
