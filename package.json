@@ -1,5 +1,8 @@
 {
   "type": "module",
+  "engines": {
+    "node": "^24.0.0 || ^26.0.0"
+  },
   "scripts": {
     "test": "npx jest",
     "test:coverage": "npx jest --coverage",

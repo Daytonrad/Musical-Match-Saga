@@ -83,7 +83,7 @@ The easiest way to play is the [live version][live]. To run it on your own compu
 ### Prerequisites
 
 - A modern web browser
-- [Node.js](https://nodejs.org/) 20.19+, 22.13+ or 24+, only needed for the tests and the linter
+- [Node.js](https://nodejs.org/) 24.x or 26.x, only needed for the tests and the linter
 
 ### Installation
 

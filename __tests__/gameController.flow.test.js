@@ -394,20 +394,21 @@ describe('gameController flow', () => {
     expect(storageMock.saveHighScore).not.toHaveBeenCalled();
   });
 
-  test('nextLevel finishes the game after the last level', () => {
+  test('nextLevel does nothing on the final level, which handleLevelWin owns', () => {
     gameState.level = mockLevels.length;
-    // totalScore already includes score (see comment above).
     gameState.score = 30;
     gameState.totalScore = 70;
     dom.nextLevelModal.classList.remove('hidden');
     nextLevel();
+    // The end-of-game flow lives in handleLevelWin(): nextLevel() must not
+    // save the high score, clear progress or show the congratulations modal.
+    expect(gameState.level).toBe(mockLevels.length);
     expect(gameState.totalScore).toBe(70);
-    expect(storageMock.saveHighScore).toHaveBeenCalledWith(70);
-    expect(storageMock.saveHighestLevel).toHaveBeenCalledWith(mockLevels.length);
-    expect(storageMock.clearGameProgress).toHaveBeenCalled();
-    expect(dom.congratsFinalScore.textContent).toBe('Total Score: 70');
-    expect(dom.congratsModal.classList.contains('hidden')).toBe(false);
-    expect(dom.nextLevelModal.classList.contains('hidden')).toBe(true);
+    expect(storageMock.saveHighScore).not.toHaveBeenCalled();
+    expect(storageMock.saveHighestLevel).not.toHaveBeenCalled();
+    expect(storageMock.clearGameProgress).not.toHaveBeenCalled();
+    expect(dom.congratsModal.classList.contains('hidden')).toBe(true);
+    expect(dom.nextLevelModal.classList.contains('hidden')).toBe(false);
   });
 
   test('autoSaveProgress saves while a level is in progress', () => {

@@ -16,7 +16,7 @@ Thanks for wanting to help with Musical Match Saga! 🎵
 
 ## Setting up
 
-The game is plain HTML, CSS and JavaScript, so there's no build step. You'll need [Node.js](https://nodejs.org/) 20.19+, 22.13+ or 24+ to run the tests and the linter. Versions 21 and 23 won't work, because ESLint doesn't support them.
+The game is plain HTML, CSS and JavaScript, so there's no build step. You'll need [Node.js](https://nodejs.org/) 24.x or 26.x to run the tests and the linter.
 
 1. Fork this repository, then clone your fork:
    ```bash
