@@ -83,7 +83,7 @@
                     <div id="livesDisplay" aria-live="polite"><span id="livesCount">5</span></div>
                     <button id="homeBtn" class="hidden home-btn"><span aria-hidden="true">🏠</span> Home</button>
                 </div>
-                <div id="objective-counters" role="group" aria-label="Objectives"></div>
+                <div id="objective-counters" aria-label="Objectives"></div>
                 <div class="moves-score-timer-row">
                     <div id="movesDisplay" class="hidden moves-horizontal" aria-live="polite">Moves: 0</div>
                     <div id="scoreDisplay" class="hidden score-horizontal" aria-live="polite">Score: 0</div>
@@ -92,7 +92,7 @@
                 <div id="totalScoreDisplay" class="hidden total-score" aria-live="polite">Total Score: 0</div>
             </div>
             <div id="game-board-wrapper">
-                <div id="gameBoard" role="group" aria-label="Game board"></div>
+                <div id="gameBoard" role="grid" aria-label="Game board"></div>
             </div>
         </div>
 
@@ -134,7 +134,7 @@
         <!-- CONGRATULATIONS MODAL -->
         <div id="congratsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="congrats">
             <div class="modal-content" style="text-align:center;">
-                <h2 id="congrats">Congratulations!</h2>
+                <h2>Congratulations!</h2>
                 <p>You have completed all levels of Musical Match Saga!</p>
                 <p id="congratsFinalScore" style="font-size: 1.3em; font-weight: 600; color: #6c5ce7; margin: 15px 0;">Total Score: 0</p>
                 <p id="congratsBonus" class="level-bonus"></p>
