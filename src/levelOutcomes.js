@@ -5,7 +5,7 @@ import { saveHighScore, saveHighestLevel, clearGameProgress } from './storage.js
 import { announce, formatScore } from './utils.js';
 import { stopTimer } from './timer.js';
 import { MOVE_BONUS, TIME_BONUS } from './constants.js';
-import { updateScoreDisplay, updateTotalScoreDisplay } from './ui.js';
+import { updateLivesDisplay, updateScoreDisplay, updateTotalScoreDisplay } from './ui.js';
 
 // Show the "New best score!" line of a result modal only when a record was set.
 function toggleNewBest(id, isNewBest) {
@@ -95,7 +95,7 @@ export function handleLevelLose(restartContainer, restartBtn, nextLevelBtn) {
         gameState.lives--;
         const livesDisplay = document.getElementById('livesDisplay');
         if (livesDisplay) {
-            livesDisplay.textContent = `❤️ Lives: ${gameState.lives}`;
+            updateLivesDisplay(livesDisplay, gameState.lives);
         }
     }
 
