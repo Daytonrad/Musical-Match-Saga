@@ -61,6 +61,14 @@ jest.mock('../src/boardEventHandlers.js', () => ({
 }));
 
 jest.mock('../src/ui.js', () => ({
+  // Real implementation so timer-display assertions reflect actual DOM behavior.
+  updateTimerDisplay: (timerDisplay, timer) => {
+    if (!timerDisplay) return;
+    timerDisplay.textContent = `Time: ${timer}s`;
+    if (timerDisplay.classList) {
+      timerDisplay.classList.toggle('low-time', timer <= 10 && timer > 0);
+    }
+  },
   showMenuPage: jest.fn(),
   updateLivesDisplay: jest.fn(),
   updateMovesDisplay: jest.fn(),
@@ -430,6 +438,42 @@ describe('gameController flow', () => {
     gameState.levelComplete = false;
     autoSaveProgress();
     expect(storageMock.saveGameProgress).not.toHaveBeenCalled();
+  });
+
+  describe('timer display is set as soon as a level starts', () => {
+    test('startLevel shows the full level time before the first tick, with no low-time style', () => {
+      startLevel(1);
+      expect(dom.timerDisplay.textContent).toBe(`Time: ${mockLevels[0].timer}s`);
+      expect(dom.timerDisplay.classList.contains('low-time')).toBe(false);
+    });
+
+    test('a new level clears a stale low-time display left by the previous level', () => {
+      dom.timerDisplay.textContent = 'Time: 6s';
+      dom.timerDisplay.classList.add('low-time');
+      startLevel(2);
+      expect(dom.timerDisplay.textContent).toBe(`Time: ${mockLevels[1].timer}s`);
+      expect(dom.timerDisplay.classList.contains('low-time')).toBe(false);
+    });
+
+    test('continueGame shows the restored timer immediately', () => {
+      storageMock.loadGameProgress.mockReturnValueOnce({
+        level: 1, lives: 3, score: 0, totalScore: 0, movesLeft: 8, timer: 15,
+        objectives: { alphaLeft: 2 }, boardState: [],
+      });
+      continueGame();
+      expect(dom.timerDisplay.textContent).toBe('Time: 15s');
+      expect(dom.timerDisplay.classList.contains('low-time')).toBe(false);
+    });
+
+    test('continueGame shows the full time when a saved no-timer level is resumed with the timer on', () => {
+      storageMock.loadGameProgress.mockReturnValueOnce({
+        level: 1, lives: 3, score: 0, totalScore: 0, movesLeft: 8, timer: 0,
+        objectives: { alphaLeft: 2 }, boardState: [],
+      });
+      continueGame();
+      expect(gameState.timer).toBe(mockLevels[0].timer);
+      expect(dom.timerDisplay.textContent).toBe(`Time: ${mockLevels[0].timer}s`);
+    });
   });
 
   describe('saved game changed in another tab', () => {
