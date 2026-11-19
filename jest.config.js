@@ -5,6 +5,7 @@ export default {
   },
   testEnvironment: 'jsdom',
   moduleNameMapper: {},
+  collectCoverageFrom: ['src/**/*.js'],
   coverageThreshold: {
     global: {
       statements: 85,
