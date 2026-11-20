@@ -8,7 +8,8 @@ import {
   updateScoreDisplay,
   updateLivesDisplay,
   updateTotalScoreDisplay,
-  updateHighScoreDisplay
+  updateHighScoreDisplay,
+  updateTimerDisplay
 } from './ui.js';
 import { getHighScore, getHighestLevel, saveHighestLevel, loadGameProgress, clearGameProgress, saveGameProgress, canSave, saveTimerMode, isValidSaveExceptBoard, isValidBoardState } from './storage.js';
 import {
@@ -32,6 +33,7 @@ import * as dom from './domElements.js';
 
 export function showMenu() {
   dom.container?.classList.remove('game-active');
+  dom.heading?.classList.remove('sr-only');
   showMenuPage(
     dom.heading,
     dom.subtitle,
@@ -95,7 +97,7 @@ export function showMenu() {
 
 export function showGameUI() {
   dom.container?.classList.add('game-active');
-  hideElement(dom.heading);
+  dom.heading?.classList.add('sr-only');
   hideElement(dom.subtitle);
   hideElement(dom.menu);
   hideElement(dom.highScoreDisplay);
@@ -389,6 +391,7 @@ export function continueGame() {
     // Saved while the timer was off: give the level its full time
     gameState.timer = config.timer * TIMER_MODES[gameState.timerMode].factor;
   }
+  updateTimerDisplay(dom.timerDisplay, gameState.timer);
   if (config.timer && gameState.timer > 0) {
     gameState.timerActive = true;
     startTimer(
@@ -480,8 +483,9 @@ export function startLevel(levelNumber) {
 }
 
 function renderLevel(config) {
-  dom.levelDisplay.textContent = 'LEVEL ' + gameState.level;
+  dom.levelDisplay.textContent = 'Level ' + gameState.level;
 
+  updateTimerDisplay(dom.timerDisplay, gameState.timer);
   updateMovesDisplay(dom.movesDisplay, gameState.movesLeft);
   updateScoreDisplay(dom.scoreDisplay, gameState.score);
   updateLivesDisplay(dom.livesDisplay, gameState.lives);

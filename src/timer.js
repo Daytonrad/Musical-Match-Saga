@@ -1,14 +1,32 @@
 // timer.js - Handles timer logic for the game
 import { updateTimerDisplay } from './ui.js';
+import { announce } from './utils.js';
+
+const ANNOUNCEMENT_POINTS = new Set([30, 10]);
+
+function hasOpenModal() {
+    return typeof document !== 'undefined' && document.querySelector('.modal:not(.hidden)') !== null;
+}
 
 export function startTimer(gameState, timerDisplay, handleLevelLose) {
     clearInterval(gameState.timerInterval);
+    const announcedPoints = new Set();
 
     gameState.timerInterval = setInterval(() => {
         if (!gameState.timerActive) return;
 
         gameState.timer = Math.max(0, gameState.timer - 1);
         updateTimerDisplay(timerDisplay, gameState.timer);
+
+        if (
+            ANNOUNCEMENT_POINTS.has(gameState.timer) &&
+            !announcedPoints.has(gameState.timer) &&
+            !gameState.levelComplete &&
+            !hasOpenModal()
+        ) {
+            announcedPoints.add(gameState.timer);
+            announce(`${gameState.timer} seconds left`);
+        }
 
         if (gameState.timer === 0) {
             clearInterval(gameState.timerInterval);
