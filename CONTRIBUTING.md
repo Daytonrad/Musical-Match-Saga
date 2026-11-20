@@ -18,6 +18,8 @@ Thanks for wanting to help with Musical Match Saga! 🎵
 
 The game is plain HTML, CSS and JavaScript, so there's no build step. You'll need [Node.js](https://nodejs.org/) 24.x or 26.x to run the tests and the linter.
 
+The required GitHub check is **Tests pass**. It succeeds only when tests pass on every Node.js version in the `test.yml` matrix, so the Node.js versions can change without changing the required check.
+
 1. Fork this repository, then clone your fork:
    ```bash
    git clone https://github.com/<your-username>/Musical-Match-Saga.git

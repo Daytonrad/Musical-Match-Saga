@@ -34,3 +34,19 @@ jobs:
 
       - name: Run tests
         run: npx jest --ci --coverage
+
+  tests-pass:
+    name: Tests pass
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Verify test matrix result
+        env:
+          TEST_RESULT: ${{ needs.test.result }}
+        run: |
+          if [ "$TEST_RESULT" != "success" ]; then
+            echo "::error::The test matrix did not succeed (result: $TEST_RESULT)."
+            exit 1
+          fi
