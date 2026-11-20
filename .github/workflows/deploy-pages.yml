@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  deploy-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -41,7 +41,7 @@ jobs:
         run: npx jest --ci --coverage
 
   deploy:
-    needs: test
+    needs: deploy-test
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
