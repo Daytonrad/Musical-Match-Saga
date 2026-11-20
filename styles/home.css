@@ -140,6 +140,24 @@ h1 {
   letter-spacing: 0.02em;
   padding: 0 8px;
 }
+
+.home-description {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 36rem;
+  margin: 0.5rem auto 1rem;
+  padding: 0 1rem;
+  text-align: center;
+  line-height: 1.45;
+}
+
+@media (max-width: 360px) {
+  .home-description {
+    margin: 0.4rem auto 0.65rem;
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+}
  
 /* =========================
    SCORE DISPLAYS
