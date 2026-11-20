@@ -5,6 +5,7 @@ import { startTimer, stopTimer, pauseTimerForModal, resumeTimerAfterModal } from
 import { gameState } from '../src/gameState.js';
 import { jest } from '@jest/globals';
 import * as ui from '../src/ui.js';
+import * as utils from '../src/utils.js';
 
 
 describe('timer', () => {
@@ -209,5 +210,71 @@ describe('pause while a modal is open', () => {
     const wasRunning = pauseTimerForModal(gameState);
     resumeTimerAfterModal(gameState, wasRunning);
     expect(gameState.timerActive).toBe(false);
+  });
+});
+
+describe('timer screen-reader announcements', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+    jest.useRealTimers();
+    stopTimer(gameState);
+    gameState.timerActive = true;
+    gameState.levelComplete = false;
+    gameState.movesLeft = 0;
+    gameState.timer = 0;
+    document.body.innerHTML = '';
+  });
+
+  test('announces at 30s and 10s and at no other time', () => {
+    jest.useFakeTimers();
+    const announceSpy = jest.spyOn(utils, 'announce').mockImplementation(() => {});
+    const timerDisplay = document.createElement('div');
+    gameState.timer = 32;
+    gameState.timerActive = true;
+
+    startTimer(gameState, timerDisplay, () => {});
+    jest.advanceTimersByTime(32000);
+
+    expect(announceSpy).toHaveBeenCalledTimes(2);
+    expect(announceSpy).toHaveBeenNthCalledWith(1, '30 seconds left');
+    expect(announceSpy).toHaveBeenNthCalledWith(2, '10 seconds left');
+  });
+
+  test('does not announce while a modal is open or timer is paused', () => {
+    jest.useFakeTimers();
+    const announceSpy = jest.spyOn(utils, 'announce').mockImplementation(() => {});
+    document.body.innerHTML = '<div class="modal"></div>';
+    const timerDisplay = document.createElement('div');
+    gameState.timer = 31;
+    gameState.timerActive = true;
+
+    startTimer(gameState, timerDisplay, () => {});
+    jest.advanceTimersByTime(1000);
+    expect(announceSpy).not.toHaveBeenCalled();
+
+    const wasRunning = pauseTimerForModal(gameState);
+    gameState.timer = 11;
+    jest.advanceTimersByTime(2000);
+    expect(announceSpy).not.toHaveBeenCalled();
+    resumeTimerAfterModal(gameState, wasRunning);
+  });
+
+  test('announces each warning once and stays quiet while paused and after resume', () => {
+    jest.useFakeTimers();
+    const announceSpy = jest.spyOn(utils, 'announce').mockImplementation(() => {});
+    const timerDisplay = document.createElement('div');
+    gameState.timer = 12;
+    gameState.timerActive = true;
+
+    startTimer(gameState, timerDisplay, () => {});
+    jest.advanceTimersByTime(2000);
+    expect(announceSpy).toHaveBeenCalledTimes(1);
+    expect(announceSpy).toHaveBeenCalledWith('10 seconds left');
+
+    const wasRunning = pauseTimerForModal(gameState);
+    jest.advanceTimersByTime(2000);
+    resumeTimerAfterModal(gameState, wasRunning);
+    jest.advanceTimersByTime(2000);
+    expect(announceSpy).toHaveBeenCalledTimes(1);
   });
 });
