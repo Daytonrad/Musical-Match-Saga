@@ -13,21 +13,30 @@
 <body>
   <header>
     <h1>Privacy Policy</h1>
-    <p>Last updated: 18 November 2026</p>
+    <p>Last updated: 20 November 2026</p>
   </header>
 
   <section>
     <p>This policy describes how the Musical Match Saga web game (“this game”) handles information when you play it in your browser.</p>
-    <p><strong>In short: the game has no accounts and no analytics, advertising or tracking code. Your progress is saved in your browser's <code>localStorage</code> for this site and is not sent anywhere by the game.</strong></p>
+    <p><strong>In short: the game has no accounts and no analytics, advertising or tracking code. Your progress and timer preference are saved in your browser's <code>localStorage</code> for this site and are not sent anywhere by the game.</strong></p>
   </section>
 
-  <h2>What is stored in your browser</h2>
-  <p>The game saves data under a single <code>localStorage</code> key (<code>musicalMatchSaga</code>) for this site. It contains:</p>
-  <ul>
-    <li>your high score and the highest level you have reached;</li>
-    <li>if you leave a level part-way through, a saved copy of that level so you can continue: the level number, lives, score, total score, moves left, timer, the board layout, the objective counters and a timestamp.</li>
-  </ul>
-  <p>This data is only used to restore your game when you come back. It contains no name, email address or other account details. The game's code does not send it to any server.</p>
+
+<h2>What is stored in your browser</h2>
+<p>The game saves data under two <code>localStorage</code> keys for this site:</p>
+<ul>
+  <li>
+    <code>musicalMatchSaga</code> stores your saved game progress, including:
+    <ul>
+      <li>Your high score and the highest level you have reached.</li>
+      <li>Your saved level, including its lives, score, total score, moves left, timer, board layout, objective counters and timestamp.</li>
+    </ul>
+  </li>
+  <li>
+    <code>musicalMatchSaga.timerMode</code> stores your selected timer setting: Normal, Extra time or No timer.
+  </li>
+</ul>
+<p>This data is only used to restore your game when you come back. It contains no name, email address or other account details. The game's code does not send it to any server.</p>
 
   <h2>What the game does not do</h2>
   <ul>
