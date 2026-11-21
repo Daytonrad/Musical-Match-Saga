@@ -133,7 +133,7 @@ h1 {
  
 .subtitle {
   font-size: 1rem;
-  color: #6a53a7;
+  color: var(--color-primary-dark);
   margin: 0 auto 20px;
   text-align: center;
   font-style: italic;
@@ -167,7 +167,7 @@ h1 {
 #highestLevelDisplay {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #6959e0;
+    color: var(--color-primary-dark);
     text-align: center;
     padding: 12px 20px;
     margin: 2px auto; /* reduced gap */
@@ -182,7 +182,7 @@ h1 {
 }
  
 #highestLevelDisplay {
-  color: #854ec4;
+  color: var(--color-primary-dark);
   background: rgba(255, 240, 255, 0.6);
   border-color: rgba(156, 92, 231, 0.2);
 }
