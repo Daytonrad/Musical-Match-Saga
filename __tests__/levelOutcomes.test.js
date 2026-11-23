@@ -1,9 +1,10 @@
 // levelOutcomes.test.js - Unit tests for levelOutcomes.js
 // Add your tests here
-import { gameState } from '../src/gameState.js';
+import { gameState, resetGameState } from '../src/gameState.js';
 import { handleLevelWin, handleLevelLose } from '../src/levelOutcomes.js';
 import { LEVELS } from '../src/levels.js';
-import { getHighScore, getHighestLevel, loadGameProgress } from '../src/storage.js';
+import { getHighScore, getHighestLevel, loadGameProgress, saveGameProgress, saveHighScore, isValidSaveExceptBoard } from '../src/storage.js';
+import { BOARD_SIZE, SYMBOLS, TIMER_MODES, MOVE_BONUS, TIME_BONUS } from '../src/constants.js';
 
 describe('levelOutcomes', () => {
   beforeEach(() => {
@@ -17,6 +18,7 @@ describe('levelOutcomes', () => {
     gameState.totalScore = 0;
     gameState.movesLeft = 0;
     gameState.timer = 0;
+    gameState.timerMode = 'normal';
     document.body.innerHTML = '';
     localStorage.clear();
   });
@@ -36,6 +38,47 @@ describe('levelOutcomes', () => {
 
     // Clean up
     document.body.removeChild(nextLevelModal);
+  });
+
+  test.each([1, LEVELS.length - 1].flatMap(level =>
+    Object.keys(TIMER_MODES).map(timerMode => [level, timerMode])
+  ))('winning level %i saves the next level immediately with timer mode %s', (level, timerMode) => {
+    gameState.timerMode = timerMode;
+    resetGameState(LEVELS[level - 1]);
+    Object.assign(gameState, {
+      level, lives: 2, score: 100, totalScore: 300, movesLeft: 4, timer: 23
+    });
+    LEVELS[level - 1].objectives.forEach(({ label }) => {
+      gameState[label + 'Left'] = 0;
+    });
+    const oldBoard = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(SYMBOLS[0]));
+    saveHighScore(600);
+    saveGameProgress(gameState, oldBoard);
+
+    handleLevelWin();
+
+    const bonus = 4 * MOVE_BONUS + (timerMode === 'off' ? 0 : 23 * TIME_BONUS);
+    const nextConfig = LEVELS[level];
+    const progress = loadGameProgress();
+    expect(progress).toEqual({
+      level: level + 1,
+      lives: 2,
+      score: 0,
+      totalScore: 300 + bonus,
+      movesLeft: nextConfig.moves,
+      timer: nextConfig.timer * TIMER_MODES[timerMode].factor,
+      boardState: [],
+      objectives: Object.fromEntries(nextConfig.objectives.map(({ label, count }) => [label + 'Left', count])),
+      timestamp: expect.any(Number)
+    });
+    expect(isValidSaveExceptBoard(progress)).toBe(true);
+    expect(getHighestLevel()).toBe(level);
+    expect(getHighScore()).toBe(600);
+    // Keep the completed level and its bonus visible until Next Level is pressed.
+    expect(gameState.level).toBe(level);
+    expect(gameState.levelComplete).toBe(true);
+    expect(gameState.score).toBe(100 + bonus);
+    expect(gameState.totalScore).toBe(300 + bonus);
   });
 
   test('handleLevelWin adds a bonus once for moves and time left', () => {

@@ -386,7 +386,7 @@ describe('gameController flow', () => {
     expect(gameState.movesLeft).toBe(mockLevels[1].moves);
   });
 
-  test('nextLevel advances to the next level and saves the highest level reached', () => {
+  test('nextLevel advances without saving the result again, which handleLevelWin owns', () => {
     gameState.level = 1;
     // totalScore is kept live in sync with score during play (see
     // boardController.js), so by the time nextLevel() runs it already
@@ -396,7 +396,8 @@ describe('gameController flow', () => {
     dom.nextLevelModal.classList.remove('hidden');
     nextLevel();
     expect(gameState.totalScore).toBe(50);
-    expect(storageMock.saveHighestLevel).toHaveBeenCalledWith(1);
+    expect(storageMock.saveHighestLevel).not.toHaveBeenCalled();
+    expect(storageMock.saveGameProgress).not.toHaveBeenCalled();
     expect(gameState.level).toBe(2);
     expect(dom.nextLevelModal.classList.contains('hidden')).toBe(true);
     expect(storageMock.saveHighScore).not.toHaveBeenCalled();

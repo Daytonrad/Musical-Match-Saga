@@ -1,10 +1,10 @@
 // levelOutcomes.js - Handles win/lose outcomes for levels
 import { gameState } from './gameState.js';
 import { LEVELS } from './levels.js';
-import { saveHighScore, saveHighestLevel, clearGameProgress } from './storage.js';
+import { saveHighScore, saveHighestLevel, clearGameProgress, saveGameProgress } from './storage.js';
 import { announce, formatScore } from './utils.js';
 import { stopTimer } from './timer.js';
-import { MOVE_BONUS, TIME_BONUS } from './constants.js';
+import { MOVE_BONUS, TIME_BONUS, TIMER_MODES } from './constants.js';
 import { updateLivesDisplay, updateScoreDisplay, updateTotalScoreDisplay } from './ui.js';
 
 // Show the "New best score!" line of a result modal only when a record was set.
@@ -75,6 +75,23 @@ export function handleLevelWin() {
             : `Congratulations! You completed all levels with a total score of ${formatScore(finalScore)}.${bonus.spoken}${bonus.spoken && bonus.text}`);
         return;
     }
+
+    // Save before showing the modal, so leaving now resumes the next level.
+    // Keep the live state on the completed level until Next Level is pressed.
+    const nextConfig = LEVELS[gameState.level];
+    const nextProgress = {
+        level: gameState.level + 1,
+        lives: gameState.lives,
+        score: 0,
+        totalScore: gameState.totalScore,
+        movesLeft: nextConfig.moves,
+        timer: nextConfig.timer * (TIMER_MODES[gameState.timerMode] || TIMER_MODES.normal).factor
+    };
+    nextConfig.objectives.forEach(({ label, count }) => {
+        nextProgress[label + 'Left'] = count;
+    });
+    saveHighestLevel(gameState.level);
+    saveGameProgress(nextProgress, []);
 
     // Show next level modal and ensure Next Level button is visible
     const nextLevelModal = document.getElementById('nextLevelModal');
