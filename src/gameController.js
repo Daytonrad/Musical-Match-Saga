@@ -11,7 +11,7 @@ import {
   updateHighScoreDisplay,
   updateTimerDisplay
 } from './ui.js';
-import { getHighScore, getHighestLevel, saveHighestLevel, loadGameProgress, clearGameProgress, saveGameProgress, canSave, saveTimerMode, isValidSaveExceptBoard, isValidBoardState } from './storage.js';
+import { getHighScore, getHighestLevel, loadGameProgress, clearGameProgress, saveGameProgress, canSave, saveTimerMode, isValidSaveExceptBoard, isValidBoardState } from './storage.js';
 import {
   getSafeSymbol,
   hasPossibleMoves,
@@ -514,9 +514,6 @@ export function nextLevel() {
   // the congratulations modal instead of the Level Complete modal, and it
   // owns the end-of-game logic (high score, clearing progress).
   if (gameState.level >= LEVELS.length) return;
-  
-  // Save highest level reached
-  saveHighestLevel(gameState.level);
   
   startLevel(gameState.level + 1);
   hideElement(dom.nextLevelModal);
