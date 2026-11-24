@@ -1,10 +1,10 @@
 // levelOutcomes.js - Handles win/lose outcomes for levels
 import { gameState } from './gameState.js';
 import { LEVELS } from './levels.js';
-import { saveHighScore, saveHighestLevel, clearGameProgress, saveGameProgress } from './storage.js';
+import { saveHighScore, saveHighestLevel, clearGameProgress, saveLevelStart } from './storage.js';
 import { announce, formatScore } from './utils.js';
 import { stopTimer } from './timer.js';
-import { MOVE_BONUS, TIME_BONUS, TIMER_MODES } from './constants.js';
+import { MOVE_BONUS, TIME_BONUS } from './constants.js';
 import { updateLivesDisplay, updateScoreDisplay, updateTotalScoreDisplay } from './ui.js';
 
 // Show the "New best score!" line of a result modal only when a record was set.
@@ -78,20 +78,8 @@ export function handleLevelWin() {
 
     // Save before showing the modal, so leaving now resumes the next level.
     // Keep the live state on the completed level until Next Level is pressed.
-    const nextConfig = LEVELS[gameState.level];
-    const nextProgress = {
-        level: gameState.level + 1,
-        lives: gameState.lives,
-        score: 0,
-        totalScore: gameState.totalScore,
-        movesLeft: nextConfig.moves,
-        timer: nextConfig.timer * (TIMER_MODES[gameState.timerMode] || TIMER_MODES.normal).factor
-    };
-    nextConfig.objectives.forEach(({ label, count }) => {
-        nextProgress[label + 'Left'] = count;
-    });
     saveHighestLevel(gameState.level);
-    saveGameProgress(nextProgress, []);
+    saveLevelStart(gameState.level + 1, gameState.lives, gameState.totalScore, gameState.timerMode);
 
     // Show next level modal and ensure Next Level button is visible
     const nextLevelModal = document.getElementById('nextLevelModal');
@@ -141,6 +129,16 @@ export function handleLevelLose(restartContainer, restartBtn, nextLevelBtn) {
             : `Game over. You've run out of lives. Total score: ${formatScore(finalScore)}.`);
         return;
     }
+
+    // totalScore includes the current attempt's score. Discard that attempt
+    // before saving or retrying, while preserving the completed levels' total.
+    gameState.totalScore = Math.max(0, gameState.totalScore - gameState.score);
+    gameState.score = 0;
+    const scoreEl = document.getElementById('scoreDisplay');
+    const totalEl = document.getElementById('totalScoreDisplay');
+    if (scoreEl) updateScoreDisplay(scoreEl, gameState.score);
+    if (totalEl) updateTotalScoreDisplay(totalEl, gameState.totalScore);
+    saveLevelStart(gameState.level, gameState.lives, gameState.totalScore, gameState.timerMode);
 
     // Toggle UI elements for restart
     if (restartContainer) {

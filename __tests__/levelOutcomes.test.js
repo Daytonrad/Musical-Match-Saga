@@ -3,7 +3,7 @@
 import { gameState, resetGameState } from '../src/gameState.js';
 import { handleLevelWin, handleLevelLose } from '../src/levelOutcomes.js';
 import { LEVELS } from '../src/levels.js';
-import { getHighScore, getHighestLevel, loadGameProgress, saveGameProgress, saveHighScore, isValidSaveExceptBoard } from '../src/storage.js';
+import { getHighScore, getHighestLevel, loadGameProgress, saveGameProgress, saveHighScore, saveHighestLevel, isValidSaveExceptBoard } from '../src/storage.js';
 import { BOARD_SIZE, SYMBOLS, TIMER_MODES, MOVE_BONUS, TIME_BONUS } from '../src/constants.js';
 
 describe('levelOutcomes', () => {
@@ -79,6 +79,65 @@ describe('levelOutcomes', () => {
     expect(gameState.levelComplete).toBe(true);
     expect(gameState.score).toBe(100 + bonus);
     expect(gameState.totalScore).toBe(300 + bonus);
+  });
+
+  test.each([1, LEVELS.length - 1].flatMap(level =>
+    Object.keys(TIMER_MODES).map(timerMode => [level, timerMode])
+  ))('losing level %i saves a fresh attempt with fewer lives in timer mode %s', (level, timerMode) => {
+    gameState.timerMode = timerMode;
+    resetGameState(LEVELS[level - 1]);
+    Object.assign(gameState, { level, lives: 3, score: 100, totalScore: 300, movesLeft: 0, timer: 0 });
+    const oldBoard = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(SYMBOLS[0]));
+    saveHighScore(900);
+    saveHighestLevel(LEVELS.length);
+    saveGameProgress(gameState, oldBoard);
+
+    handleLevelLose(null, null, null);
+
+    const config = LEVELS[level - 1];
+    expect(loadGameProgress()).toEqual({
+      level, lives: 2, score: 0, totalScore: 200,
+      movesLeft: config.moves,
+      timer: config.timer * TIMER_MODES[timerMode].factor,
+      boardState: [],
+      objectives: Object.fromEntries(config.objectives.map(({ label, count }) => [label + 'Left', count])),
+      timestamp: expect.any(Number)
+    });
+    expect(isValidSaveExceptBoard(loadGameProgress())).toBe(true);
+    expect(gameState.totalScore).toBe(200);
+    expect(gameState.score).toBe(0);
+    expect(gameState.levelComplete).toBe(true);
+    expect(gameState.timerActive).toBe(false);
+    expect(getHighScore()).toBe(900);
+    expect(getHighestLevel()).toBe(LEVELS.length);
+  });
+
+  test('repeated failed attempts do not add points to the level-start total', () => {
+    Object.assign(gameState, { lives: 3, score: 100, totalScore: 300 });
+    handleLevelLose(null, null, null);
+    resetGameState(LEVELS[0]); // The retry starts the same level.
+    gameState.score += 40;
+    gameState.totalScore += 40;
+    handleLevelLose(null, null, null);
+
+    expect(loadGameProgress()).toEqual(expect.objectContaining({ lives: 1, score: 0, totalScore: 200 }));
+    expect(gameState.totalScore).toBe(200);
+  });
+
+  test('a loss does not save a negative total from inconsistent historical scores', () => {
+    Object.assign(gameState, { lives: 3, score: 100, totalScore: 50 });
+    handleLevelLose(null, null, null);
+    expect(loadGameProgress()).toEqual(expect.objectContaining({ score: 0, totalScore: 0 }));
+  });
+
+  test('the final lost life still records the existing Game Over score and clears progress', () => {
+    Object.assign(gameState, { lives: 1, score: 100, totalScore: 300 });
+    saveGameProgress(gameState, []);
+    handleLevelLose(null, null, null);
+    expect(gameState.lives).toBe(0);
+    expect(getHighScore()).toBe(300);
+    expect(gameState.totalScore).toBe(300);
+    expect(loadGameProgress()).toBeNull();
   });
 
   test('handleLevelWin adds a bonus once for moves and time left', () => {

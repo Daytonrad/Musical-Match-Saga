@@ -66,6 +66,8 @@ describe('trySwap', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    boardMock.findMatches.mockReset();
+    boardMock.hasPossibleMoves.mockReturnValue(true);
     levelsMock.getLevelConfig.mockReturnValue(LEVEL_CONFIG);
 
     gameBoard = document.createElement('div');
@@ -92,6 +94,25 @@ describe('trySwap', () => {
       totalScore: 0,
     });
     delete gameState.violinLeft;
+  });
+
+  test.each([0, -1])('does not swap or score when movesLeft is %i', async moves => {
+    gameState.movesLeft = moves;
+    const group = [sourceCell, targetCell, makeCell('🎻')];
+    boardMock.findMatches.mockReturnValueOnce([group]).mockReturnValueOnce([group]).mockReturnValueOnce([]);
+
+    await trySwap(sourceCell, targetCell);
+
+    expect(sourceCell.textContent).toBe('🎵');
+    expect(targetCell.textContent).toBe('🎻');
+    expect(boardMock.findMatches).not.toHaveBeenCalled();
+    expect(gameState.score).toBe(0);
+    expect(gameState.totalScore).toBe(0);
+    expect(gameState.movesLeft).toBe(moves);
+    expect(autoSaveProgress).not.toHaveBeenCalled();
+    expect(levelOutcomesMock.handleLevelWin).not.toHaveBeenCalled();
+    expect(levelOutcomesMock.handleLevelLose).not.toHaveBeenCalled();
+    expect(gameState.isResolving).toBe(false);
   });
 
   test('clears the selected tile, including a stale copy, when a swap starts', async () => {

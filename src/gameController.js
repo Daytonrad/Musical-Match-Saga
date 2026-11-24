@@ -11,7 +11,7 @@ import {
   updateHighScoreDisplay,
   updateTimerDisplay
 } from './ui.js';
-import { getHighScore, getHighestLevel, loadGameProgress, clearGameProgress, saveGameProgress, canSave, saveTimerMode, isValidSaveExceptBoard, isValidBoardState } from './storage.js';
+import { getHighScore, getHighestLevel, loadGameProgress, clearGameProgress, saveGameProgress, saveLevelStart, canSave, saveTimerMode, isValidSaveExceptBoard, isValidBoardState } from './storage.js';
 import {
   getSafeSymbol,
   hasPossibleMoves,
@@ -361,6 +361,15 @@ export function continueGame() {
   const config = getLevelConfig(savedProgress.level);
   if (!config) {
     startGame();
+    return;
+  }
+
+  // Older versions saved the final move before recording the loss. Restart
+  // these saves and persist the repair so subsequent reloads stay playable.
+  if (savedProgress.movesLeft === 0) {
+    gameState.totalScore = Math.max(0, savedProgress.totalScore - savedProgress.score);
+    startLevel(savedProgress.level);
+    saveLevelStart(gameState.level, gameState.lives, gameState.totalScore, gameState.timerMode);
     return;
   }
   

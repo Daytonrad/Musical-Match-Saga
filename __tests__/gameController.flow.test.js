@@ -27,6 +27,7 @@ jest.mock('../src/storage.js', () => ({
   loadGameProgress: jest.fn(() => null),
   clearGameProgress: jest.fn(),
   saveGameProgress: jest.fn(),
+  saveLevelStart: jest.fn(() => true),
   canSave: jest.fn(() => true),
   // Real validators, so continueGame's handling of bad saves is tested for real.
   isValidSaveExceptBoard: jest.requireActual('../src/storage.js').isValidSaveExceptBoard,
@@ -89,7 +90,7 @@ import * as timerMock from '../src/timer.js';
 import * as levelOutcomesMock from '../src/levelOutcomes.js';
 import { LEVELS as mockLevels } from '../src/levels.js';
 import { gameState } from '../src/gameState.js';
-import { INITIAL_LIVES, BOARD_SIZE, SYMBOLS } from '../src/constants.js';
+import { INITIAL_LIVES, BOARD_SIZE, SYMBOLS, TIMER_MODES } from '../src/constants.js';
 import * as dom from '../src/domElements.js';
 import {
   resetGame,
@@ -322,6 +323,24 @@ describe('gameController flow', () => {
     timer: 20,
     objectives: { betaLeft: 1 },
     boardState: validBoard(),
+  });
+
+  test.each(Object.keys(TIMER_MODES))('continueGame repairs a zero-move save in timer mode %s', timerMode => {
+    gameState.timerMode = timerMode;
+    storageMock.loadGameProgress.mockReturnValueOnce({ ...goodSave(), movesLeft: 0 });
+
+    continueGame();
+
+    expect(gameState.level).toBe(2);
+    expect(gameState.lives).toBe(2);
+    expect(gameState.score).toBe(0);
+    expect(gameState.totalScore).toBe(60);
+    expect(gameState.movesLeft).toBe(mockLevels[1].moves);
+    expect(gameState.timer).toBe(mockLevels[1].timer * TIMER_MODES[timerMode].factor);
+    expect(gameState.betaLeft).toBe(3);
+    expect(boardMock.generateGameBoard).toHaveBeenCalledTimes(1);
+    expect(dom.gameBoard.children).toHaveLength(0); // Do not restore the old saved board.
+    expect(storageMock.saveLevelStart).toHaveBeenCalledWith(2, 2, 60, timerMode);
   });
 
   test.each([

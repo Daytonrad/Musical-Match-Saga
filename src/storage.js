@@ -97,6 +97,20 @@ export function saveGameProgress(gameState, boardState) {
   return writeStore(parsed);
 }
 
+// An empty board tells Continue to generate a fresh board for this level.
+export function saveLevelStart(level, lives, totalScore, timerMode) {
+  const config = LEVELS[level - 1];
+  const progress = {
+    level, lives, score: 0, totalScore,
+    movesLeft: config.moves,
+    timer: config.timer * (TIMER_MODES[timerMode] || TIMER_MODES.normal).factor
+  };
+  config.objectives.forEach(({ label, count }) => {
+    progress[label + 'Left'] = count;
+  });
+  return saveGameProgress(progress, []);
+}
+
 export function loadGameProgress() {
   return readStore().savedProgress || null;
 }

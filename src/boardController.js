@@ -33,7 +33,7 @@ export function setBoardControllerDeps(deps) {
  * @param {HTMLElement} targetCell
  */
 export async function trySwap(sourceCell, targetCell) {
-  if (gameState.isResolving || gameState.levelComplete || !gameState.timerActive) return;
+  if (gameState.isResolving || gameState.levelComplete || !gameState.timerActive || gameState.movesLeft <= 0) return;
   gameState.isResolving = true;
 
   try {
