@@ -152,11 +152,14 @@ Musical-Match-Saga/
 │   ├── home.css                  # home/menu screen
 │   ├── game.css                  # game board and HUD
 │   ├── modals.css                # pop-ups: level complete, level failed, game over, congratulations, how to play, return home
+│   ├── accessibility.css         # accessibility statement page
+│   ├── privacy.css               # privacy policy page
 │   └── fonts/                    # self-hosted Pacifico webfont and its licence (OFL.txt)
 │
 ├── images/                       # screenshots and app icons
 ├── .github/workflows/
 │   ├── test.yml                  # runs the Jest tests on pushes to main and on pull requests
+│   ├── links.yml                 # checks the links in the README and pages
 │   └── deploy-pages.yml          # runs the tests, then publishes the game to GitHub Pages
 │
 ├── index.html                    # the game page
