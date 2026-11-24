@@ -36,45 +36,46 @@ export async function trySwap(sourceCell, targetCell) {
   if (gameState.isResolving || gameState.levelComplete || !gameState.timerActive) return;
   gameState.isResolving = true;
 
-  // Clear any tap selection, including a stale copy no longer in gameState
-  gameBoard.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
-  setSelectedCell(null);
+  try {
+    // Clear any tap selection, including a stale copy no longer in gameState
+    gameBoard.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+    setSelectedCell(null);
 
-  const matchResult = await swapAndCheckMatch(sourceCell, targetCell);
-  if (!matchResult) {
-    gameState.isResolving = false;
-    return;
-  }
+    const matchResult = await swapAndCheckMatch(sourceCell, targetCell);
+    if (gameState.levelComplete) return;
 
-  const { scoreGained, matchedCounts, config } = await resolveAllMatchesAndDrop();
-  updateScoreAndObjectives(scoreGained, matchedCounts, config);
+    if (matchResult) {
+      const result = await resolveAllMatchesAndDrop();
+      if (gameState.levelComplete) return;
+      const { scoreGained, matchedCounts, config } = result;
+      updateScoreAndObjectives(scoreGained, matchedCounts, config);
 
-  // Auto-save progress after each move
-  autoSaveProgress();
+      // Auto-save progress after each valid move
+      autoSaveProgress();
 
-  if (checkWinCondition(config)) {
-    // Use handleLevelWin to show modal and update state
-    await wait(250); // Animation delay for match clear
-    await import('./levelOutcomes.js').then(({ handleLevelWin }) => {
-      handleLevelWin();
-    });
-    gameState.isResolving = false;
-    return;
-  }
+      if (checkWinCondition(config)) {
+        await wait(250); // Animation delay for match clear
+        if (gameState.levelComplete) return;
+        const { handleLevelWin } = await import('./levelOutcomes.js');
+        if (!gameState.levelComplete) handleLevelWin();
+        return;
+      }
+    }
 
-  if (gameState.movesLeft <= 0 && !gameState.levelComplete && (gameState.timerMode === 'off' || gameState.timer > 0)) {
-    // Show lose modal immediately if out of moves and not a win
-    await import('./levelOutcomes.js').then(({ handleLevelLose }) => {
-      // Always use confirmRestartBtn and confirmNextLevelBtn
+    // Timeout also applies to a reverted swap. A valid last-second move
+    // gets its win check first, even when it used the final move.
+    const timedOut = gameState.timerMode !== 'off' && gameState.timer <= 0;
+    if (gameState.movesLeft <= 0 || timedOut) {
+      const { handleLevelLose } = await import('./levelOutcomes.js');
+      if (gameState.levelComplete) return;
       const restartLevelModal = document.getElementById('restartLevelModal');
       const confirmRestartBtn = document.getElementById('confirmRestartBtn');
       const confirmNextLevelBtn = document.getElementById('confirmNextLevelBtn');
       handleLevelLose(restartLevelModal, confirmRestartBtn, confirmNextLevelBtn);
-    });
+    }
+  } finally {
     gameState.isResolving = false;
-    return;
   }
-  gameState.isResolving = false;
 }
 
 
@@ -89,6 +90,7 @@ async function swapAndCheckMatch(sourceCell, targetCell) {
   updateCellClass(sourceCell);
   updateCellClass(targetCell);
   await wait(180);
+  if (gameState.levelComplete) return false;
   let matches = findMatches(gameBoard, BOARD_SIZE);
   const swappedInMatch = matches.some(group => group.includes(sourceCell) || group.includes(targetCell));
   if (matches.length === 0 || !swappedInMatch) {
@@ -147,6 +149,7 @@ async function resolveAllMatchesAndDrop() {
     }
 
     await wait(80); // Reduced animation delay for faster match disappearance
+    if (gameState.levelComplete) return { scoreGained, matchedCounts, config };
     for (const group of matches) {
       for (const cell of group) {
         cell.textContent = '';
@@ -165,17 +168,17 @@ async function resolveAllMatchesAndDrop() {
     );
     matches = findMatches(gameBoard, BOARD_SIZE);
     if (!hasPossibleMoves(gameBoard, BOARD_SIZE)) {
-      await import('./board.js').then(({ reshuffleBoard }) => {
-        reshuffleBoard(gameBoard, BOARD_SIZE, SYMBOLS, getSafeSymbol, hasPossibleMoves, () => wireUpCellEvents(
-          gameBoard,
-          BOARD_SIZE,
-          boardEventHandlers.onDragStart,
-          boardEventHandlers.onDrop,
-          boardEventHandlers.onTouchStart,
-          boardEventHandlers.onTouchEnd,
-          boardEventHandlers.onActivate
-        ));
-      });
+      const { reshuffleBoard } = await import('./board.js');
+      if (gameState.levelComplete) return { scoreGained, matchedCounts, config };
+      reshuffleBoard(gameBoard, BOARD_SIZE, SYMBOLS, getSafeSymbol, hasPossibleMoves, () => wireUpCellEvents(
+        gameBoard,
+        BOARD_SIZE,
+        boardEventHandlers.onDragStart,
+        boardEventHandlers.onDrop,
+        boardEventHandlers.onTouchStart,
+        boardEventHandlers.onTouchEnd,
+        boardEventHandlers.onActivate
+      ));
       break;
     }
   }
