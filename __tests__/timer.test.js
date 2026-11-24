@@ -59,7 +59,7 @@ describe('timer', () => {
     }, 1100);
   });
 
-  test('startTimer does not call handleLevelLose if no moves are left when timer reaches 0', (done) => {
+  test('an idle level still loses on timeout when no moves are left', (done) => {
     document.body.innerHTML = '<div id="timer"></div>';
     const timerDisplay = document.getElementById('timer');
     gameState.timer = 1;
@@ -67,7 +67,7 @@ describe('timer', () => {
     const handleLevelLose = jest.fn();
     startTimer(gameState, timerDisplay, handleLevelLose);
     setTimeout(() => {
-      expect(handleLevelLose).not.toHaveBeenCalled();
+      expect(handleLevelLose).toHaveBeenCalledTimes(1);
       expect(timerDisplay.textContent).toBe('Time: 0s');
       done();
     }, 1100);

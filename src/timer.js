@@ -32,9 +32,9 @@ export function startTimer(gameState, timerDisplay, handleLevelLose) {
             clearInterval(gameState.timerInterval);
             gameState.timerActive = false;
 
-            // Only trigger lose if moves are still above 0 and level not complete
-
-            if (gameState.movesLeft > 0 && !gameState.levelComplete && typeof handleLevelLose === 'function') {
+            // A move started before the deadline owns its outcome. Let it
+            // finish resolving before deciding whether the level was won.
+            if (!gameState.isResolving && !gameState.levelComplete && typeof handleLevelLose === 'function') {
                 handleLevelLose();
             }
         }

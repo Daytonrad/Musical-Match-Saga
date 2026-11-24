@@ -48,6 +48,7 @@ import * as levelOutcomesMock from '../src/levelOutcomes.js';
 import { autoSaveProgress } from '../src/gameController.js';
 import { trySwap, setBoardControllerDeps } from '../src/boardController.js';
 import { gameState, setSelectedCell } from '../src/gameState.js';
+import { startTimer, stopTimer } from '../src/timer.js';
 
 const LEVEL_CONFIG = {
   objectives: [{ symbol: '🎻', label: 'violin', count: 5 }],
@@ -244,5 +245,124 @@ describe('trySwap', () => {
 
     expect(boardMock.reshuffleBoard).toHaveBeenCalled();
     expect(gameState.isResolving).toBe(false);
+  });
+
+  describe('a move started before the deadline', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+      boardMock.findMatches.mockReset();
+      boardMock.hasPossibleMoves.mockReturnValue(true);
+      gameState.timer = 1;
+      gameState.lives = 3;
+      levelOutcomesMock.handleLevelWin.mockImplementation(() => {
+        gameState.levelComplete = true;
+        gameState.timerActive = false;
+        stopTimer(gameState);
+      });
+      levelOutcomesMock.handleLevelLose.mockImplementation(() => {
+        gameState.levelComplete = true;
+        gameState.timerActive = false;
+        gameState.lives--;
+        stopTimer(gameState);
+      });
+    });
+
+    afterEach(() => {
+      stopTimer(gameState);
+      levelOutcomesMock.handleLevelWin.mockReset();
+      levelOutcomesMock.handleLevelLose.mockReset();
+      jest.useRealTimers();
+    });
+
+    function queueMatch(count) {
+      levelsMock.getLevelConfig.mockReturnValue({
+        objectives: [{ symbol: '🎻', label: 'violin', count }],
+      });
+      const group = [sourceCell, targetCell, makeCell('🎻')];
+      boardMock.findMatches
+        .mockReturnValueOnce([group])
+        .mockReturnValueOnce([group])
+        .mockReturnValueOnce([]);
+    }
+
+    test.each([
+      ['swap validation', 850],
+      ['match clearing', 780],
+      ['the win animation', 550],
+    ])('wins exactly once when time expires during %s', async (_phase, delay) => {
+      queueMatch(1);
+      startTimer(gameState, null, levelOutcomesMock.handleLevelLose);
+      await jest.advanceTimersByTimeAsync(delay);
+
+      const move = trySwap(sourceCell, targetCell);
+      await jest.advanceTimersByTimeAsync(1000 - delay);
+      expect(gameState.timer).toBe(0);
+      expect(levelOutcomesMock.handleLevelLose).not.toHaveBeenCalled();
+      await jest.advanceTimersByTimeAsync(1000);
+      await move;
+
+      expect(levelOutcomesMock.handleLevelWin).toHaveBeenCalledTimes(1);
+      expect(levelOutcomesMock.handleLevelLose).not.toHaveBeenCalled();
+      expect(gameState.lives).toBe(3);
+      expect(gameState.isResolving).toBe(false);
+    });
+
+    test.each([
+      [5, 850], [5, 780], [1, 850], [1, 780],
+    ])('loses exactly once with %i initial moves and a %ims start delay', async (moves, delay) => {
+      queueMatch(10);
+      gameState.movesLeft = moves;
+      startTimer(gameState, null, levelOutcomesMock.handleLevelLose);
+      await jest.advanceTimersByTimeAsync(delay);
+
+      const move = trySwap(sourceCell, targetCell);
+      await jest.advanceTimersByTimeAsync(1000 - delay);
+      expect(levelOutcomesMock.handleLevelLose).not.toHaveBeenCalled();
+      await jest.advanceTimersByTimeAsync(1000);
+      await move;
+      await jest.advanceTimersByTimeAsync(3000);
+
+      expect(levelOutcomesMock.handleLevelLose).toHaveBeenCalledTimes(1);
+      expect(levelOutcomesMock.handleLevelWin).not.toHaveBeenCalled();
+      expect(gameState.lives).toBe(2);
+      expect(gameState.levelComplete).toBe(true);
+      expect(gameState.isResolving).toBe(false);
+    });
+
+    test('reverts an invalid swap before applying the deferred timeout loss', async () => {
+      boardMock.findMatches.mockReturnValueOnce([]);
+      startTimer(gameState, null, levelOutcomesMock.handleLevelLose);
+      await jest.advanceTimersByTimeAsync(850);
+      const move = trySwap(sourceCell, targetCell);
+      await jest.advanceTimersByTimeAsync(150);
+      expect(levelOutcomesMock.handleLevelLose).not.toHaveBeenCalled();
+      await jest.advanceTimersByTimeAsync(100);
+      await move;
+
+      expect(sourceCell.textContent).toBe('🎵');
+      expect(targetCell.textContent).toBe('🎻');
+      expect(gameState.movesLeft).toBe(5);
+      expect(levelOutcomesMock.handleLevelLose).toHaveBeenCalledTimes(1);
+      expect(levelOutcomesMock.handleLevelWin).not.toHaveBeenCalled();
+      expect(gameState.isResolving).toBe(false);
+    });
+
+    test.each([100, 200, 300])('stops pending work if the level ends externally after %ims', async delay => {
+      queueMatch(1);
+      const move = trySwap(sourceCell, targetCell);
+      await jest.advanceTimersByTimeAsync(delay);
+      gameState.levelComplete = true;
+      await jest.advanceTimersByTimeAsync(1000);
+      await move;
+
+      expect(levelOutcomesMock.handleLevelWin).not.toHaveBeenCalled();
+      expect(levelOutcomesMock.handleLevelLose).not.toHaveBeenCalled();
+      expect(gameState.isResolving).toBe(false);
+      if (delay < 260) {
+        expect(gameState.score).toBe(0);
+        expect(autoSaveProgress).not.toHaveBeenCalled();
+        expect(boardMock.dropAndRefill).not.toHaveBeenCalled();
+      }
+    });
   });
 });
